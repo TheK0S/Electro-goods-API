@@ -4,9 +4,10 @@ namespace Electro_goods_API.Models
 {
     public class Category
     {
-        public int Id { get; set; }
+        public int CategoryId { get; set; }
         [Required]
-        public string NameUA { get; set; }
-        public string NameRU { get; set; }
+        public string CategoryName { get; set; }
+        [Required]
+        public string CategoryNameUK { get; set; }
     }
 }

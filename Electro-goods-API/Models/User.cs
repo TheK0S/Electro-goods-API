@@ -5,7 +5,6 @@ namespace Electro_goods_API.Models
 {
     public class User
     {
-        [Key]
         public int Id { get; set; }
         [Required]
         [MaxLength(50), MinLength(3)]

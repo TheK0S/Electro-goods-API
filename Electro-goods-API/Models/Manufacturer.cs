@@ -6,7 +6,8 @@ namespace Electro_goods_API.Models
     {
         public int Id { get; set; }
         [Required]
-        public string Name { get; set; }
+        public string NameUA { get; set; }
+        public string NameRU { get; set; }
         public List<Product> Products { get; set; }
     }
 }
