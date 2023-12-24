@@ -38,15 +38,19 @@ namespace Electro_goods_API.Services
         {
             try
             {
+                if(id <= 0)
+                    throw new ArgumentOutOfRangeException("Wrong Id");
+
                 var role = await _context.Roles.FindAsync(id);
+
                 if (role == null)
-                    throw new ArgumentException();
+                    throw new InvalidOperationException("Role not found");
 
                 return role;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                _logger.LogError(ex.Message);
                 throw;
             }
         }

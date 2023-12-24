@@ -28,25 +28,30 @@ namespace Electro_goods_API.Controllers
         {
             try
             {
-                var roles = await _service.GetAll();
-                return Ok(roles);
+                return Ok(await _service.GetAll());
             }
             catch (Exception) { return StatusCode(500, "Internal server Error"); }            
         }
 
         // GET: api/Roles/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<RoleDto>> GetRole(int id)
+        public async Task<ActionResult<RoleDto>> GetRoleById(int id)
         {
             if (id <= 0)
                 return BadRequest("Id <= 0");
 
-            var role = await _service.GetRoleById(id);
-
-            if (role == null)
+            try
+            {
+                return Ok(await _service.GetRoleById(id));
+            }
+            catch (InvalidOperationException)
+            {
                 return NotFound();
-
-            return Ok(role);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal server Error");
+            }
         }
 
         // PUT: api/Roles/5
