@@ -1,4 +1,9 @@
+using Electro_goods_API.Middlewares;
 using Electro_goods_API.Models.DTO;
+using Electro_goods_API.Repositories;
+using Electro_goods_API.Repositories.Interfaces;
+using Electro_goods_API.Services;
+using Electro_goods_API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Electro_goods_API
@@ -12,7 +17,12 @@ namespace Electro_goods_API
             builder.Services.AddControllers();
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-            
+            builder.Services.AddLogging();
+            builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
+            builder.Services.AddTransient<IRoleReposirory, RoleRepository>();
+            builder.Services.AddTransient<ICountryRepositiry, CountryRepository>();
+            builder.Services.AddTransient<IManufacturerRepository, ManufacturerRepository>();
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -29,8 +39,7 @@ namespace Electro_goods_API
             app.UseAuthorization();
             app.UseAuthentication();
 
-
-
+            app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
             app.MapControllers();
 
