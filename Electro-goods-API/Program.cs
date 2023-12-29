@@ -22,6 +22,8 @@ namespace Electro_goods_API
             builder.Services.AddTransient<IRoleReposirory, RoleRepository>();
             builder.Services.AddTransient<ICountryRepositiry, CountryRepository>();
             builder.Services.AddTransient<IManufacturerRepository, ManufacturerRepository>();
+            builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddTransient<IOrderStatusRepository, OrderStatusRepository>();
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
