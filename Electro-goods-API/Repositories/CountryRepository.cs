@@ -1,4 +1,5 @@
-﻿using Electro_goods_API.Models.DTO;
+﻿using Electro_goods_API.Models;
+using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,7 +16,7 @@ namespace Electro_goods_API.Repositories
             _logger = logger;
         }
 
-        public async Task<List<CountryDto>> GetAllCountries()
+        public async Task<List<Country>> GetAllCountries()
         {
             try
             {
@@ -33,7 +34,7 @@ namespace Electro_goods_API.Repositories
             }
         }
 
-        public async Task<CountryDto> GetCountryById(int id)
+        public async Task<Country> GetCountryById(int id)
         {
             try
             {
@@ -54,7 +55,7 @@ namespace Electro_goods_API.Repositories
             }
         }
 
-        public async Task UpdateCountry(int id, CountryDto country)
+        public async Task UpdateCountry(int id, Country country)
         {
             if (id != country.Id)
             {
@@ -85,7 +86,7 @@ namespace Electro_goods_API.Repositories
         }
 
 
-        public async Task<CountryDto> CreateCountry(CountryDto country)
+        public async Task<Country> CreateCountry(Country country)
         {
             if (_context.Countries == null)
             {

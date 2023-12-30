@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Electro_goods_API.Models.DTO
+namespace Electro_goods_API.Models.Entities
 {
-    public class UserDto
+    public class User
     {
         public int Id { get; set; }
         [Required]
@@ -24,8 +24,8 @@ namespace Electro_goods_API.Models.DTO
         public DateTime CreationDate { get; set; }
         public bool IsActive { get; set; }
         public int RoleId { get; set; }
-        public RoleDto? Role { get; set; }
-        public BasketDto? Basket { get; set; }
-        public List<OrderDto>? Orders { get; set; }
+        public Role? Role { get; set; }
+        public Basket? Basket { get; set; }
+        public List<Order>? Orders { get; set; }
     }
 }

@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Electro_goods_API.Models.DTO;
 using System.Data;
 using Electro_goods_API.Services.Interfaces;
+using Electro_goods_API.Models.Entities;
 
 namespace Electro_goods_API.Controllers
 {
@@ -24,21 +24,21 @@ namespace Electro_goods_API.Controllers
 
         // GET: api/Roles
         [HttpGet]
-        public async Task<ActionResult<List<RoleDto>>> GetAllRoles()
+        public async Task<ActionResult<List<Role>>> GetAllRoles()
         {
             return Ok(await _service.GetAllRoles());
         }
 
         // GET: api/Roles/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<RoleDto>> GetRoleById(int id)
+        public async Task<ActionResult<Role>> GetRoleById(int id)
         {
             return Ok(await _service.GetRoleById(id));
         }
 
         // PUT: api/Roles/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutRole(int id, RoleDto role)
+        public async Task<IActionResult> PutRole(int id, Role role)
         {
             await _service.UpdateRole(id, role);
             return NoContent();
@@ -46,7 +46,7 @@ namespace Electro_goods_API.Controllers
 
         // POST: api/Roles
         [HttpPost]
-        public async Task<ActionResult<RoleDto>> PostRole(RoleDto role)
+        public async Task<ActionResult<Role>> PostRole(Role role)
         {
             role = await _service.CreateRole(role);
 

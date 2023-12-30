@@ -1,4 +1,5 @@
-﻿using Electro_goods_API.Models.DTO;
+﻿using Electro_goods_API.Models;
+using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.Metrics;
@@ -15,7 +16,7 @@ namespace Electro_goods_API.Repositories
             _logger = logger;
         }
 
-        public async Task<List<OrderStatusDto>> GetAllOrderStatuses()
+        public async Task<List<OrderStatus>> GetAllOrderStatuses()
         {
             try
             {
@@ -33,7 +34,7 @@ namespace Electro_goods_API.Repositories
             }
         }
 
-        public async Task<OrderStatusDto> GetOrderStatusById(int id)
+        public async Task<OrderStatus> GetOrderStatusById(int id)
         {
             try
             {
@@ -54,7 +55,7 @@ namespace Electro_goods_API.Repositories
             }
         }
 
-        public async Task<OrderStatusDto> CreateOrderStatus(OrderStatusDto orderStatus)
+        public async Task<OrderStatus> CreateOrderStatus(OrderStatus orderStatus)
         {
             if (_context.OrderStatuses == null)
                 throw new InvalidOperationException("OrderStatus not found");
@@ -78,7 +79,7 @@ namespace Electro_goods_API.Repositories
             }
         }
 
-        public async Task UpdateOrderStatus(int id, OrderStatusDto orderStatus)
+        public async Task UpdateOrderStatus(int id, OrderStatus orderStatus)
         {
             if (id != orderStatus.Id)
                 throw new ArgumentOutOfRangeException("Wrong Id");

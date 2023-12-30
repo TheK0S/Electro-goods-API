@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Electro_goods_API.Models.DTO
+namespace Electro_goods_API.Models.Entities
 {
-    public class BasketItemDto
+    public class BasketItem
     {
         public int Id { get; set; }
         public int BasketId { get; set; }
@@ -12,7 +12,7 @@ namespace Electro_goods_API.Models.DTO
         [Column(TypeName = "money")]
         public decimal ProductPrice { get; set; }
         public int Quantity { get; set; }
-        public BasketDto? Basket { get; set; }
-        public ProductDto? Product { get; set; }
+        public Basket? Basket { get; set; }
+        public Product? Product { get; set; }
     }
 }

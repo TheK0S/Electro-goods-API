@@ -1,4 +1,5 @@
-﻿using Electro_goods_API.Models.DTO;
+﻿using Electro_goods_API.Models;
+using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +18,7 @@ namespace Electro_goods_API.Services
             _logger = logger;
         }
 
-        public async Task<List<RoleDto>> GetAllRoles()
+        public async Task<List<Role>> GetAllRoles()
         {
             try
             {
@@ -35,7 +36,7 @@ namespace Electro_goods_API.Services
             }            
         }
 
-        public async Task<RoleDto> GetRoleById(int id)
+        public async Task<Role> GetRoleById(int id)
         {
             try
             {
@@ -56,7 +57,7 @@ namespace Electro_goods_API.Services
             }
         }
 
-        public async Task UpdateRole(int id, RoleDto role)
+        public async Task UpdateRole(int id, Role role)
         {
             if (id != role.Id)
             {
@@ -87,7 +88,7 @@ namespace Electro_goods_API.Services
         }
 
 
-        public async Task<RoleDto> CreateRole(RoleDto role)
+        public async Task<Role> CreateRole(Role role)
         {
             if (_context.Roles == null)
             {

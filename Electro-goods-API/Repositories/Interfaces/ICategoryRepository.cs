@@ -1,13 +1,13 @@
-﻿using Electro_goods_API.Models.DTO;
+﻿using Electro_goods_API.Models.Entities;
 
 namespace Electro_goods_API.Repositories.Interfaces
 {
     public interface ICategoryRepository
     {
-        Task<List<CategoryDto>> GetAllCategories();
-        Task<CategoryDto> GetCategoryById(int id);
-        Task<CategoryDto> CreateCategory(CategoryDto category);
-        Task UpdateCategory(int id, CategoryDto category);
+        Task<List<Category>> GetAllCategories();
+        Task<Category> GetCategoryById(int id);
+        Task<Category> CreateCategory(Category category);
+        Task UpdateCategory(int id, Category category);
         Task DeleteCategory(int id);
     }
 }

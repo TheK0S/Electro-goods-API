@@ -1,4 +1,5 @@
-﻿using Electro_goods_API.Models.DTO;
+﻿using Electro_goods_API.Models;
+using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Repositories.Interfaces;
 using Electro_goods_API.Services;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,7 @@ namespace Electro_goods_API.Repositories
             _logger = logger;
         }
 
-        public async Task<List<ManufacturerDto>> GetAllManufacturers()
+        public async Task<List<Manufacturer>> GetAllManufacturers()
         {
             try
             {
@@ -34,7 +35,7 @@ namespace Electro_goods_API.Repositories
             }
         }
 
-        public async Task<ManufacturerDto> GetManufacturerById(int id)
+        public async Task<Manufacturer> GetManufacturerById(int id)
         {
             try
             {
@@ -55,7 +56,7 @@ namespace Electro_goods_API.Repositories
             }
         }
 
-        public async Task UpdateManufacturer(int id, ManufacturerDto manufacturer)
+        public async Task UpdateManufacturer(int id, Manufacturer manufacturer)
         {
             if (id != manufacturer.Id)
             {
@@ -86,7 +87,7 @@ namespace Electro_goods_API.Repositories
         }
 
 
-        public async Task<ManufacturerDto> CreateManufacturer(ManufacturerDto manufacturer)
+        public async Task<Manufacturer> CreateManufacturer(Manufacturer manufacturer)
         {
             if (_context.Manufacturers == null)
             {

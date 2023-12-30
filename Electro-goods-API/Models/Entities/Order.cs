@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Electro_goods_API.Models.DTO
+namespace Electro_goods_API.Models.Entities
 {
-    public class OrderDto
+    public class Order
     {
         public int Id { get; set; }
         public int UserId { get; set; }
@@ -12,8 +12,8 @@ namespace Electro_goods_API.Models.DTO
         public decimal Price { get; set; }
         public string? ShippingAddress { get; set; }
         public int OrderStatusId { get; set; }
-        public UserDto? User { get; set; }
-        public OrderStatusDto? OrderStatus { get; set; }
-        public List<OrderItemDto>? OrderItems { get; set; }
+        public User? User { get; set; }
+        public OrderStatus? OrderStatus { get; set; }
+        public List<OrderItem>? OrderItems { get; set; }
     }
 }

@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Electro_goods_API.Models.DTO
+namespace Electro_goods_API.Models.Entities
 {
-    public class ProductAttributDto
+    public class ProductAttribut
     {
         [Key]
         public int AttributeId { get; set; }

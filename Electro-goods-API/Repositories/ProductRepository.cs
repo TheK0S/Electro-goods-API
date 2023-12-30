@@ -1,28 +1,25 @@
 ﻿using Electro_goods_API.Models;
 using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Repositories.Interfaces;
-using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.Metrics;
 
 namespace Electro_goods_API.Repositories
 {
-    public class CategoryRepository : ICategoryRepository
+    public class ProductRepository : IProductRepository
     {
         private readonly AppDbContext _context;
-        private readonly ILogger<CategoryRepository> _logger;
-
-        public CategoryRepository(AppDbContext context, ILogger<CategoryRepository> logger)
+        private readonly ILogger<ProductRepository> _logger;
+        public ProductRepository(AppDbContext context, ILogger<ProductRepository> logger)
         {
             _context = context;
             _logger = logger;
         }
 
-        public async Task<List<Category>> GetAllCategories()
+        public async Task<List<Product>> GetAllProducts()
         {
             try
             {
-                return await _context.Categories.ToListAsync();
+                return await _context.Products.ToListAsync();
             }
             catch (ArgumentNullException ex)
             {
@@ -36,19 +33,19 @@ namespace Electro_goods_API.Repositories
             }
         }
 
-        public async Task<Category> GetCategoryById(int id)
+        public async Task<Product> GetProductById(int id)
         {
             if (id <= 0)
                 throw new ArgumentOutOfRangeException("Wrong Id");
 
             try
             {
-                var category = await _context.Categories.FindAsync(id);
+                var product = await _context.Products.FindAsync(id);
 
-                if (category == null)
-                    throw new InvalidOperationException("Country not found");
+                if (product == null)
+                    throw new InvalidOperationException("Product not found");
 
-                return category;
+                return product;
             }
             catch (Exception ex)
             {
@@ -57,19 +54,19 @@ namespace Electro_goods_API.Repositories
             }
         }
 
-        public async Task<Category> CreateCategory(Category category)
+        public async Task<Product> CreateProduct(Product product)
         {
-            if (_context.Categories == null)
+            if (_context.Products == null)
             {
-                throw new InvalidOperationException("Category not found");
+                throw new InvalidOperationException("Products table not found");
             }
 
-            _context.Categories.Add(category);
+            _context.Products.Add(product);
 
             try
             {
                 await _context.SaveChangesAsync();
-                return category;
+                return product;
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -83,12 +80,12 @@ namespace Electro_goods_API.Repositories
             }
         }
 
-        public async Task UpdateCategory(int id, Category category)
+        public async Task UpdateProduct(int id, Product product)
         {
-            if (id != category.Id)
+            if (id != product.Id)
                 throw new ArgumentOutOfRangeException("Wrong Id");
 
-            _context.Entry(category).State = EntityState.Modified;
+            _context.Entry(product).State = EntityState.Modified;
 
             try
             {
@@ -96,8 +93,8 @@ namespace Electro_goods_API.Repositories
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                if (!CategoryExists(id))
-                    throw new InvalidOperationException("Category not found");
+                if (!ProductExists(id))
+                    throw new InvalidOperationException("Product not found");
 
                 _logger.LogError(ex.Message);
                 throw;
@@ -109,20 +106,20 @@ namespace Electro_goods_API.Repositories
             }
         }
 
-        public async Task DeleteCategory(int id)
+        public async Task DeleteProduct(int id)
         {
-            if (_context.Categories == null)
+            if (_context.Products == null)
             {
-                throw new InvalidOperationException("Categories table not found");
+                throw new InvalidOperationException("Products table not found");
             }
-            var category = await _context.Categories.FindAsync(id);
+            var product = await _context.Products.FindAsync(id);
 
-            if (category == null)
+            if (product == null)
             {
-                throw new InvalidOperationException("Category not found");
+                throw new InvalidOperationException("Product not found");
             }
 
-            _context.Categories.Remove(category);
+            _context.Products.Remove(product);
 
             try
             {
@@ -134,7 +131,7 @@ namespace Electro_goods_API.Repositories
             }
         }
 
-        private bool CategoryExists(int id)
+        private bool ProductExists(int id)
         {
             return (_context.Categories?.Any(e => e.Id == id)).GetValueOrDefault();
         }

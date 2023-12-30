@@ -1,5 +1,5 @@
 using Electro_goods_API.Middlewares;
-using Electro_goods_API.Models.DTO;
+using Electro_goods_API.Models;
 using Electro_goods_API.Repositories;
 using Electro_goods_API.Repositories.Interfaces;
 using Electro_goods_API.Services;

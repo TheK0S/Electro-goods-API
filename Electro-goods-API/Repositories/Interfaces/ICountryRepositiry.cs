@@ -1,13 +1,13 @@
-﻿using Electro_goods_API.Models.DTO;
+﻿using Electro_goods_API.Models.Entities;
 
 namespace Electro_goods_API.Services.Interfaces
 {
     public interface ICountryRepositiry
     {
-        Task<List<CountryDto>> GetAllCountries();
-        Task<CountryDto> GetCountryById(int id);
-        Task<CountryDto> CreateCountry(CountryDto country);
-        Task UpdateCountry(int id, CountryDto country);
+        Task<List<Country>> GetAllCountries();
+        Task<Country> GetCountryById(int id);
+        Task<Country> CreateCountry(Country country);
+        Task UpdateCountry(int id, Country country);
         Task DeleteCountry(int id);
     }
 }
