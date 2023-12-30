@@ -32,7 +32,8 @@ namespace Electro_goods_API.Middlewares
                     Title = lang == "ru" ? "Чтото пошло не так." : "Щось пішло не так.",
                     Detail = lang == "ru" ? "Проверьте правильность URL и повторите запрос." : "Перевірте правильність URL та повторіть запит.",
                 };
-                await WriteExceptionInResponseAsync(context, problem);
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                await context.Response.WriteAsJsonAsync(problem);
             }
             catch (ArgumentNullException)
             {
@@ -43,18 +44,20 @@ namespace Electro_goods_API.Middlewares
                     Title = lang == "ru" ? "Не указаны необходимые данные в запросе" : "Не вказані необхідні дані у запиті",
                     Detail = lang == "ru" ? "Укажите все необходимые данные и повторите попытку" : "Вкажіть всі необхідні дані та повторіть спробу",
                 };
-                await WriteExceptionInResponseAsync(context, problem);
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                await context.Response.WriteAsJsonAsync(problem);
             }
             catch (ArgumentOutOfRangeException e)
             {
                 ProblemDetails problem = new()
                 {
-                    Status = (int)HttpStatusCode.InternalServerError,
+                    Status = (int)HttpStatusCode.BadRequest,
                     Type = lang == "ru" ? "Ошибка в приложении клиента" : "Помилка у програмі клієнта",
                     Title = lang == "ru" ? "Некорректные данные в запросе" : "Некоректні дані у запиті",
                     Detail = e.Message,
                 };
-                await WriteExceptionInResponseAsync(context, problem);
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                await context.Response.WriteAsJsonAsync(problem);
             }
             catch (InvalidOperationException e)
             {
@@ -65,7 +68,8 @@ namespace Electro_goods_API.Middlewares
                     Title = lang == "ru" ? "Запрашиваемый ресурс не найден" : "Затребуваний ресурс не знайдено",
                     Detail = e.Message,
                 };
-                await WriteExceptionInResponseAsync(context, problem);
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                await context.Response.WriteAsJsonAsync(problem);
             }
             catch (DbUpdateConcurrencyException e)
             {
@@ -76,7 +80,8 @@ namespace Electro_goods_API.Middlewares
                     Title = lang == "ru" ? "Не удалось получить данные из базы данных" : "Не вдалося отримати дані з бази даних",
                     Detail = e.Message,
                 };
-                await WriteExceptionInResponseAsync(context, problem);
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                await context.Response.WriteAsJsonAsync(problem);
             }
             catch (Exception e)
             {
@@ -90,16 +95,9 @@ namespace Electro_goods_API.Middlewares
                 };
 
                 _logger.LogError(e, e.Message);
-                await WriteExceptionInResponseAsync(context, problem);
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                await context.Response.WriteAsJsonAsync(problem);
             }
-        }
-
-        private async Task WriteExceptionInResponseAsync(HttpContext context, ProblemDetails problem)
-        {
-            context.Response.StatusCode = problem.Status ?? (int)HttpStatusCode.InternalServerError;
-            context.Response.ContentType = "application/json";
-            string json = JsonSerializer.Serialize(problem);
-            await context.Response.WriteAsync(json);
         }
     }
 }
