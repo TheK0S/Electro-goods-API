@@ -1,3 +1,4 @@
+using Electro_goods_API.Mapping;
 using Electro_goods_API.Middlewares;
 using Electro_goods_API.Models;
 using Electro_goods_API.Repositories;
@@ -24,9 +25,11 @@ namespace Electro_goods_API
             builder.Services.AddTransient<IManufacturerRepository, ManufacturerRepository>();
             builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
             builder.Services.AddTransient<IOrderStatusRepository, OrderStatusRepository>();
+            builder.Services.AddTransient<IProductRepository, ProductRepository>();
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
 
             var app = builder.Build();
 
