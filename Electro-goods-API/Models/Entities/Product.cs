@@ -12,6 +12,7 @@ namespace Electro_goods_API.Models.Entities
         public string? NameUK { get; set; }
         public string? Description { get; set; }
         public string? DescriptionUK { get; set; }
+        public string? ImgPath { get; set; }
         [Column(TypeName = "money")]
         public decimal Price { get; set; } = 0;
         public int StockQuantity { get; set; }
