@@ -9,7 +9,7 @@ using System.Data;
 using Electro_goods_API.Services.Interfaces;
 using Electro_goods_API.Models.Entities;
 
-namespace Electro_goods_API.Controllers
+namespace Electro_goods_API.Controllers.StoreAdmin
 {
     [Route("api/[controller]")]
     [ApiController]
