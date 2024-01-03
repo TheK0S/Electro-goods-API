@@ -1,10 +1,11 @@
-﻿using AutoMapper;
+﻿using Electro_goods_API.Mapping;
 using Electro_goods_API.Models.DTO;
 using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Repositories.Interfaces;
 using Electro_goods_API.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using static Electro_goods_API.Mapping.Mapper;
 
 namespace Electro_goods_API.Controllers
 {
@@ -13,19 +14,19 @@ namespace Electro_goods_API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _service;
-        private readonly IMapper _mapper;
 
-        public ProductsController(IProductRepository service, IMapper mapper)
+        public ProductsController(IProductRepository service)
         {
             _service = service;
-            _mapper = mapper;
         }
 
         // GET: api/Products
         [HttpGet]
         public async Task<ActionResult<List<ProductDTO>>> GetAllProducts()
         {
-            return Ok(await _service.GetAllProducts());
+            var products = await _service.GetAllProducts();
+            var productsDto = MapProductToProductDTO(products, GetLanguageFromHeaders(Request.Headers));
+            return Ok(productsDto);
         }
 
         // GET: api/Products/5
@@ -33,20 +34,7 @@ namespace Electro_goods_API.Controllers
         public async Task<ActionResult<ProductDTO>> GetProductById(int id)
         {
             Product product = await _service.GetProductById(id);
-
-            string? lang = Request.Headers.Keys.Contains("Api-Language") ? Request.Headers["Api-Language"] : "ru";
-
-            ProductDTO productDTO = new()
-            {
-                Id = product.Id,
-                Name = lang == "ru" ? product.Name : product.NameUK,
-                Description = lang == "ru" ? product.Description : product.DescriptionUK,
-                Price = product.Price,
-                CategoryId = product.CategoryId,
-                CountryId = product.CountryId,
-                ManufacturerId = product.ManufacturerId
-            };
-
+            ProductDTO productDTO = MapProductToProductDTO(product, GetLanguageFromHeaders(Request.Headers));
             return Ok(productDTO);
         }
 

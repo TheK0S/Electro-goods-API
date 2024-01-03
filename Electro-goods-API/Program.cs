@@ -29,7 +29,6 @@ namespace Electro_goods_API
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddAutoMapper(typeof(MappingProfile));
 
             var app = builder.Build();
 
