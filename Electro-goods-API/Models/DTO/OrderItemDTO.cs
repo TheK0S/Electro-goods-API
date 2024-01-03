@@ -8,6 +8,6 @@ namespace Electro_goods_API.Models.DTO
         public string? ProductName { get; set; }
         public int ProductPrice { get; set; }
         public int Quantity { get; set; }
-        public Product? Product { get; set; }
+        public ProductDTO? Product { get; set; }
     }
 }

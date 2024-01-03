@@ -13,11 +13,11 @@ namespace Electro_goods_API.Controllers.StoreAdmin
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RolesController : ControllerBase
+    public class RolesAdminController : ControllerBase
     {
         private readonly IRoleReposirory _service;
 
-        public RolesController(IRoleReposirory service)
+        public RolesAdminController(IRoleReposirory service)
         {
             _service = service;
         }

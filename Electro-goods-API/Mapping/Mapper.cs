@@ -34,6 +34,58 @@ namespace Electro_goods_API.Mapping
             return productsDTO;
         }
 
+        public static OrderDTO MapOrderToOrderDTO(Order order, string language)
+        {
+            if (language is null) language = "ru";
+
+            return new OrderDTO
+            {
+                Id = order.Id,
+                OrderDate = order.OrderDate,
+                Price = order.Price,
+                ShippingAddress = order.ShippingAddress,
+                User = order.User,
+                OrderStatus = language == "ru" ? order?.OrderStatus?.StatusName : order?.OrderStatus?.StatusNameUK,
+                OrderItems = MapOrderItemToOrderItemDTO(order.OrderItems, language),
+            };
+        }
+
+        public static List<OrderDTO> MapOrderToOrderDTO(List<Order> orders, string language)
+        {
+            if (language == null) language = "ru";
+
+            var ordersDTO = new List<OrderDTO>();
+            foreach (var order in orders)
+                ordersDTO.Add(MapOrderToOrderDTO(order, language));
+
+            return ordersDTO;
+        }
+
+        public static OrderItemDTO MapOrderItemToOrderItemDTO(OrderItem orderItem, string language)
+        {
+            if (language is null) language = "ru";
+
+            return new OrderItemDTO
+            {
+                Id= orderItem.Id,
+                ProductName = language == "ru"? orderItem.ProductName: orderItem.ProductNameUK,
+                ProductPrice = orderItem.ProductPrice,
+                Quantity = orderItem.Quantity,
+                Product = MapProductToProductDTO(orderItem.Product, language),
+            };
+        }
+
+        public static List<OrderItemDTO> MapOrderItemToOrderItemDTO(List<OrderItem> orderItems, string language)
+        {
+            if (language is null) language = "ru";
+        
+            var orderItemsDTO = new List<OrderItemDTO>();
+            foreach (var orderItem in orderItems)
+                orderItemsDTO.Add(MapOrderItemToOrderItemDTO(orderItem, language));
+
+            return orderItemsDTO;
+        }
+
         public static string GetLanguageFromHeaders(IHeaderDictionary headers)
         {
             if (headers == null)

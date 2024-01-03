@@ -48,7 +48,7 @@ namespace Electro_goods_API.Controllers
 
         // POST: api/Products
         [HttpPost]
-        public async Task<ActionResult<Product>> PostRole(Product product)
+        public async Task<ActionResult<Product>> PostProduct(Product product)
         {
             product = await _service.CreateProduct(product);
 
@@ -57,7 +57,7 @@ namespace Electro_goods_API.Controllers
 
         // DELETE: api/Products/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRole(int id)
+        public async Task<IActionResult> DeleteProduct(int id)
         {
             await _service.DeleteProduct(id);
             return NoContent();
