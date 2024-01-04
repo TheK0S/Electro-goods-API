@@ -20,45 +20,20 @@ namespace Electro_goods_API.Controllers
 
         // GET: api/Orders
         [HttpGet]
-        public async Task<ActionResult<List<Order>>> GetAllOrders()
+        public async Task<ActionResult<List<OrderDTO>>> GetOrdersByUserId(int id)
         {
-            var orders = await _service.GetAllOrders();
+            var orders = await _service.GetOrdersByUserId(id);
             var ordersDto = MapOrderToOrderDTO(orders, GetLanguageFromHeaders(Request.Headers));
             return Ok(ordersDto);
         }
 
-        // GET: api/Orders/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<OrderDTO>> GetOrderById(int id)
-        {
-            Order order = await _service.GetOrderById(id);
-
-            return Ok(order);
-        }
-
-        // PUT: api/Orders/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder(int id, Product product)
-        {
-            await _service.UpdateProduct(id, product);
-            return NoContent();
-        }
-
         // POST: api/Orders
         [HttpPost]
-        public async Task<ActionResult<Product>> PostOrder(Product product)
+        public async Task<ActionResult<OrderDTO>> PostOrder(Order order)
         {
-            product = await _service.CreateProduct(product);
+            order = await _service.CreateOrder(order);
 
-            return CreatedAtAction("GetProductById", new { id = product.Id }, product);
-        }
-
-        // DELETE: api/Products/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder(int id)
-        {
-            await _service.DeleteProduct(id);
-            return NoContent();
+            return Ok("Order is created");
         }
     }
 }
