@@ -1,5 +1,6 @@
 ﻿using Electro_goods_API.Models;
 using Electro_goods_API.Models.Entities;
+using Electro_goods_API.Models.Filters;
 using Electro_goods_API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,54 @@ namespace Electro_goods_API.Repositories
             _logger = logger;
         }
 
+        public async Task<List<Product>> GetProducts(ProductFilter filter)
+        {
+            if(filter == null)
+                return await GetAllProducts();
+
+            var query = _context.Products.AsQueryable();
+
+            if(!string.IsNullOrEmpty(filter.NameContains))
+                query = query.Where(p => p.Name.Contains(filter.NameContains) || p.NameUK.Contains(filter.NameContains));
+
+            if(filter.MinPrice.HasValue)
+                query = query.Where(p => p.Price >= filter.MinPrice);
+
+            if(filter.MaxPrice.HasValue && filter.MaxPrice > filter.MinPrice)
+                query = query.Where(p => p.Price <= filter.MaxPrice);
+
+            if(filter.Discount.HasValue && filter.Discount > 0)
+                query = query.Where(p => p.Discount >= filter.Discount);
+
+            if (filter.CategoryId.HasValue && filter.CategoryId > 0)
+                query = query.Where(p => p.CategoryId == filter.CategoryId);
+
+            if (filter.CountryId.HasValue && filter.CountryId > 0)
+                query = query.Where(p => p.CountryId == filter.CountryId);
+
+            if (filter.ManufacturerId.HasValue && filter.ManufacturerId > 0)
+                query = query.Where(p => p.ManufacturerId == filter.ManufacturerId);
+
+            if (filter.ProductAttributesDict != null && filter.ProductAttributesDict.Any())
+                foreach (var attribute in filter.ProductAttributesDict)
+                    query = query.Where(p => p.ProductAttributes.Any(pa => 
+                        (pa.AttributeName == attribute.Key || pa.AttributeNameUK == attribute.Key) && 
+                        (pa.AttributeValue == attribute.Value || pa.AttributeValueUK == attribute.Value)));
+
+            var skipAmount = (filter.Page - 1) * filter.PageSize;
+            query = query.Skip(skipAmount).Take(filter.PageSize);
+
+            try
+            {
+                return await query.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                throw;
+            }
+        }
+
         public async Task<List<Product>> GetAllProducts()
         {
             try
@@ -23,7 +72,7 @@ namespace Electro_goods_API.Repositories
             }
             catch (ArgumentNullException ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.LogError(ex, ex.Message);
                 throw;
             }
             catch (Exception ex)
@@ -49,7 +98,7 @@ namespace Electro_goods_API.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.LogError(ex, ex.Message);
                 throw;
             }
         }
@@ -70,12 +119,12 @@ namespace Electro_goods_API.Repositories
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.LogError(ex, ex.Message);
                 throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.LogError(ex, ex.Message);
                 throw;
             }
         }
@@ -96,12 +145,12 @@ namespace Electro_goods_API.Repositories
                 if (!ProductExists(id))
                     throw new InvalidOperationException("Product not found");
 
-                _logger.LogError(ex.Message);
+                _logger.LogError(ex, ex.Message);
                 throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.LogError(ex, ex.Message);
                 throw;
             }
         }

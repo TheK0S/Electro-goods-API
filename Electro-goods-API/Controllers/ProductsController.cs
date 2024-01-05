@@ -1,6 +1,7 @@
 ﻿using Electro_goods_API.Mapping;
 using Electro_goods_API.Models.DTO;
 using Electro_goods_API.Models.Entities;
+using Electro_goods_API.Models.Filters;
 using Electro_goods_API.Repositories.Interfaces;
 using Electro_goods_API.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -20,11 +21,11 @@ namespace Electro_goods_API.Controllers
             _service = service;
         }
 
-        // GET: api/Products
-        [HttpGet]
-        public async Task<ActionResult<List<ProductDTO>>> GetAllProducts()
+        // POST: api/Products
+        [HttpPost("filter")]
+        public async Task<ActionResult<List<ProductDTO>>> GetProducts(ProductFilter filter)
         {
-            var products = await _service.GetAllProducts();
+            var products = await _service.GetProducts(filter);
             var productsDto = MapProductToProductDTO(products, GetLanguageFromHeaders(Request.Headers));
             return Ok(productsDto);
         }
