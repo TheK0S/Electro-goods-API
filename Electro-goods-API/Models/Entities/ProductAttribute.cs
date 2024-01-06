@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Electro_goods_API.Models.Entities
 {
-    public class ProductAttribut
+    public class ProductAttribute
     {
         [Key]
         public int AttributeId { get; set; }

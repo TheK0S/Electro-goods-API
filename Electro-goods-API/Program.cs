@@ -1,4 +1,5 @@
 using Electro_goods_API.Mapping;
+using Electro_goods_API.Mapping.Interfaces;
 using Electro_goods_API.Middlewares;
 using Electro_goods_API.Models;
 using Electro_goods_API.Repositories;
@@ -19,6 +20,7 @@ namespace Electro_goods_API
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddLogging();
+            builder.Services.AddSingleton<IMapper, Mapper>();
             builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
             builder.Services.AddTransient<IRoleReposirory, RoleRepository>();
             builder.Services.AddTransient<ICountryRepositiry, CountryRepository>();

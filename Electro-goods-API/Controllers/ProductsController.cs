@@ -1,4 +1,5 @@
 ﻿using Electro_goods_API.Mapping;
+using Electro_goods_API.Mapping.Interfaces;
 using Electro_goods_API.Models.DTO;
 using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Models.Filters;
@@ -6,7 +7,6 @@ using Electro_goods_API.Repositories.Interfaces;
 using Electro_goods_API.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using static Electro_goods_API.Mapping.Mapper;
 
 namespace Electro_goods_API.Controllers
 {
@@ -15,10 +15,12 @@ namespace Electro_goods_API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _service;
+        private readonly IMapper _mapper;
 
-        public ProductsController(IProductRepository service)
+        public ProductsController(IProductRepository service, IMapper mapper)
         {
             _service = service;
+            _mapper = mapper;
         }
 
         // POST: api/Products
@@ -26,7 +28,7 @@ namespace Electro_goods_API.Controllers
         public async Task<ActionResult<List<ProductDTO>>> GetProducts(ProductFilter filter)
         {
             var products = await _service.GetProducts(filter);
-            var productsDto = MapProductToProductDTO(products, GetLanguageFromHeaders(Request.Headers));
+            var productsDto = _mapper.MapProductToProductDTO(products, _mapper.GetLanguageFromHeaders(Request.Headers));
             return Ok(productsDto);
         }
 
@@ -35,7 +37,7 @@ namespace Electro_goods_API.Controllers
         public async Task<ActionResult<ProductDTO>> GetProductById(int id)
         {
             Product product = await _service.GetProductById(id);
-            ProductDTO productDTO = MapProductToProductDTO(product, GetLanguageFromHeaders(Request.Headers));
+            ProductDTO productDTO = _mapper.MapProductToProductDTO(product, _mapper.GetLanguageFromHeaders(Request.Headers));
             return Ok(productDTO);
         }
 

@@ -25,7 +25,7 @@ namespace Electro_goods_API.Models.Entities
         public Category? Category { get; set; }
         public Country? Country { get; set; }
         public Manufacturer? Manufacturer { get; set; }
-        public List<ProductAttribut>? ProductAttributes { get; set; }
+        public List<ProductAttribute>? ProductAttributes { get; set; }
 
     }
 }

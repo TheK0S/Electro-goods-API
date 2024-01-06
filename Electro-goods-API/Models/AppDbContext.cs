@@ -13,7 +13,7 @@ namespace Electro_goods_API.Models
         public DbSet<Category> Categories { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<Manufacturer> Manufacturers { get; set; }
-        public DbSet<ProductAttribut> ProductAttributs { get; set; }
+        public DbSet<ProductAttribute> ProductAttributs { get; set; }
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<BasketItem> BasketItems { get; set; }
         public DbSet<Order> Orders { get; set; }

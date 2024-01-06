@@ -21,10 +21,10 @@ namespace Electro_goods_API.Repositories
             if(filter == null)
                 return await GetAllProducts();
 
-            var query = _context.Products.AsQueryable();
+            var query = _context.Products.AsQueryable().Where(p => p.IsActive);
 
             if(!string.IsNullOrEmpty(filter.NameContains))
-                query = query.Where(p => p.Name.Contains(filter.NameContains) || p.NameUK.Contains(filter.NameContains));
+                query = query.Where(p => p.Name.ToLower().Contains(filter.NameContains.ToLower()) || p.NameUK.ToLower().Contains(filter.NameContains.ToLower()));
 
             if(filter.MinPrice.HasValue)
                 query = query.Where(p => p.Price >= filter.MinPrice);
@@ -52,6 +52,11 @@ namespace Electro_goods_API.Repositories
 
             var skipAmount = (filter.Page - 1) * filter.PageSize;
             query = query.Skip(skipAmount).Take(filter.PageSize);
+            query = query
+                .Include(p => p.Category)
+                .Include(p => p.Country)
+                .Include(p => p.Manufacturer)
+                .Include(p => p.ProductAttributes);
 
             try
             {
@@ -89,7 +94,12 @@ namespace Electro_goods_API.Repositories
 
             try
             {
-                var product = await _context.Products.FindAsync(id);
+                var product = await _context.Products
+                    .Include(p => p.Category)
+                    .Include(p => p.Country)
+                    .Include(p => p.Manufacturer)
+                    .Include(p => p.ProductAttributes)
+                    .FirstAsync(p => p.Id == id);
 
                 if (product == null)
                     throw new InvalidOperationException("Product not found");
