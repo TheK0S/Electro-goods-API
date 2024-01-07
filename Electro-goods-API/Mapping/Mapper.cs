@@ -2,7 +2,6 @@
 using Electro_goods_API.Mapping.Interfaces;
 using Electro_goods_API.Models.DTO;
 using Electro_goods_API.Models.Entities;
-using static NuGet.Packaging.PackagingConstants;
 
 namespace Electro_goods_API.Mapping
 {

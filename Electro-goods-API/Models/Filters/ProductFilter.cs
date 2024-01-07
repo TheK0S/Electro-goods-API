@@ -4,9 +4,8 @@ namespace Electro_goods_API.Models.Filters
 {
     public class ProductFilter
     {
-        public string? NameContains { get; set; }
-        public decimal? MinPrice { get; set; }
-        public decimal? MaxPrice { get; set; }
+        public int? MinPrice { get; set; }
+        public int? MaxPrice { get; set; }
         public int? Discount { get; set; }
         public int? CategoryId { get; set; }
         public int? CountryId { get; set; }
