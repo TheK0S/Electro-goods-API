@@ -1,14 +1,9 @@
-﻿using Azure.Core.GeoJson;
-using Electro_goods_API.Mapping;
-using Electro_goods_API.Mapping.Interfaces;
+﻿using Electro_goods_API.Mapping.Interfaces;
 using Electro_goods_API.Models.DTO;
 using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Models.Filters;
 using Electro_goods_API.Repositories.Interfaces;
-using Electro_goods_API.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Controllers;
 
 namespace Electro_goods_API.Controllers
 {
@@ -24,15 +19,6 @@ namespace Electro_goods_API.Controllers
             _service = service;
             _mapper = mapper;
         }
-
-        // POST: api/Products
-        //[HttpPost("filter")]
-        //public async Task<ActionResult<List<ProductDTO>>> GetProducts(ProductFilter filter)
-        //{
-        //    var products = await _service.GetProducts(filter);
-        //    var productsDto = _mapper.MapProductToProductDTO(products, _mapper.GetLanguageFromHeaders(Request.Headers));
-        //    return Ok(productsDto);
-        //}
 
         // GET: api/Products
         [HttpGet]
@@ -53,9 +39,7 @@ namespace Electro_goods_API.Controllers
             if (attributes.ContainsKey("manufacturerId")) attributes.Remove("manufacturerId");
 
             ProductFilter filter = new ProductFilter
-            {
-                Page = page,
-                PageSize = pageSize,
+            {               
                 MinPrice = minPrice,
                 MaxPrice = maxPrice,
                 CategoryId = categoryId,
@@ -63,12 +47,46 @@ namespace Electro_goods_API.Controllers
                 ProductAttributesDict = attributes
             };
 
-            var products = await _service.GetProducts(filter);
+            var products = await _service.GetProducts(page, pageSize, filter);
             var productsDto = _mapper.MapProductToProductDTO(products, _mapper.GetLanguageFromHeaders(Request.Headers));
             return Ok(productsDto);
         }
 
+        // GET: api/Products/count
+        [HttpGet("count")]
+        public async Task<ActionResult<List<ProductDTO>>> GetProductsCount(
+            [FromQuery] int minPrice,
+            [FromQuery] int maxPrice,
+            [FromQuery] int categoryId,
+            [FromQuery] int manufacturerId,
+            [FromQuery] Dictionary<string, string> attributes)
+        {
+            if (attributes.ContainsKey("minPrice")) attributes.Remove("minPrice");
+            if (attributes.ContainsKey("maxPrice")) attributes.Remove("maxPrice");
+            if (attributes.ContainsKey("categoryId")) attributes.Remove("categoryId");
+            if (attributes.ContainsKey("manufacturerId")) attributes.Remove("manufacturerId");
 
+            ProductFilter filter = new ProductFilter
+            {
+                MinPrice = minPrice,
+                MaxPrice = maxPrice,
+                CategoryId = categoryId,
+                ManufacturerId = manufacturerId,
+                ProductAttributesDict = attributes
+            };
+                        
+            return Ok(await _service.GetProductsCount(filter));
+        }
+
+        // GET: api/Products/discounted
+        [HttpGet("discounted")]
+        public async Task<ActionResult<List<ProductDTO>>> GetDiscountedProducts(int page, int pageSize)
+        {
+            var products = await _service.GetDiscountedProducts(page, pageSize);
+            var productDTO = _mapper.MapProductToProductDTO(products, _mapper.GetLanguageFromHeaders(Request.Headers));
+
+            return Ok(productDTO);
+        }
 
         // GET: api/Products/5
         [HttpGet("{id}")]
