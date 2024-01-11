@@ -1,7 +1,6 @@
 ﻿using Electro_goods_API.Models;
 using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Repositories.Interfaces;
-using Electro_goods_API.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Electro_goods_API.Repositories

@@ -1,5 +1,5 @@
 ﻿using Electro_goods_API.Models.Entities;
-using Electro_goods_API.Services.Interfaces;
+using Electro_goods_API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

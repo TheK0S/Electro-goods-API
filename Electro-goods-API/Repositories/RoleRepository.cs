@@ -1,11 +1,11 @@
 ﻿using Electro_goods_API.Models;
 using Electro_goods_API.Models.Entities;
-using Electro_goods_API.Services.Interfaces;
+using Electro_goods_API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 
-namespace Electro_goods_API.Services
+namespace Electro_goods_API.Repositories
 {
     public class RoleRepository : IRoleReposirory
     {

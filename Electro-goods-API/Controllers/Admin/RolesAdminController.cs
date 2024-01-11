@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Electro_goods_API.Services.Interfaces;
+using Electro_goods_API.Repositories.Interfaces;
 using Electro_goods_API.Models.Entities;
 
 namespace Electro_goods_API.Controllers.StoreAdmin

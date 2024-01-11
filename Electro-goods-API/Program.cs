@@ -2,18 +2,12 @@ using Electro_goods_API.Mapping;
 using Electro_goods_API.Mapping.Interfaces;
 using Electro_goods_API.Middlewares;
 using Electro_goods_API.Models;
-using Electro_goods_API.Repositories;
-using Electro_goods_API.Repositories.Interfaces;
-using Electro_goods_API.Services;
-using Electro_goods_API.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using System.IdentityModel.Tokens.Jwt;
-using System.Reflection.Metadata;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Models.DTO;
 using System.Security.Claims;
 
@@ -52,13 +46,7 @@ namespace Electro_goods_API
             builder.Services.AddLogging();
             builder.Services.AddSingleton<IMapper, Mapper>();
             builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
-            builder.Services.AddTransient<IRoleReposirory, RoleRepository>();
-            builder.Services.AddTransient<ICountryRepositiry, CountryRepository>();
-            builder.Services.AddTransient<IManufacturerRepository, ManufacturerRepository>();
-            builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
-            builder.Services.AddTransient<IOrderRepository, OrderRepository>();
-            builder.Services.AddTransient<IOrderStatusRepository, OrderStatusRepository>();
-            builder.Services.AddTransient<IProductRepository, ProductRepository>();
+            builder.Services.AddRepository();
             
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -73,7 +61,12 @@ namespace Electro_goods_API
 
             //app.UseHttpsRedirection();
 
-            app.MapGet("/security/getMessage", () => "Hello World!").RequireAuthorization();
+            app.MapGet("/security/getMessage", [Authorize] (HttpContext context) =>
+                $"Time: \n" +
+                $"Id: {context.User.FindFirstValue("Id")}\n" +
+                $"NameId: {context.User.FindFirstValue(JwtRegisteredClaimNames.NameId)}\n" +
+                $"Email: {context.User.FindFirstValue(ClaimTypes.Email)}");
+
             app.MapPost("/security/createToken",
             [AllowAnonymous] (AuthenticateRequestDTO user) =>
             {
@@ -87,13 +80,13 @@ namespace Electro_goods_API
                     {
                         Subject = new ClaimsIdentity(new[]
                         {
-                new Claim("Id", Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.Jti,
-                Guid.NewGuid().ToString())
+                            new Claim("Id", Guid.NewGuid().ToString()),
+                            new Claim(JwtRegisteredClaimNames.NameId, user.Email),
+                            new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                            new Claim(JwtRegisteredClaimNames.Jti,
+                            Guid.NewGuid().ToString())
                          }),
-                        Expires = DateTime.UtcNow.AddMinutes(5),
+                        Expires = DateTime.Now.AddSeconds(30),
                         Issuer = issuer,
                         Audience = audience,
                         SigningCredentials = new SigningCredentials
@@ -104,6 +97,8 @@ namespace Electro_goods_API
                     var token = tokenHandler.CreateToken(tokenDescriptor);
                     var jwtToken = tokenHandler.WriteToken(token);
                     var stringToken = tokenHandler.WriteToken(token);
+                    Console.WriteLine("Expires: " + tokenDescriptor.Expires);
+                    Console.WriteLine("Now: " + DateTime.Now);
                     return Results.Ok(stringToken);
                 }
                 return Results.Unauthorized();
