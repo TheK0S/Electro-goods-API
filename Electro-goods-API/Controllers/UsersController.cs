@@ -23,7 +23,7 @@ namespace Electro_goods_API.Controllers
             Request.RouteValues.TryGetValue("language", out object? lang);
             if (lang == null)
             {
-                lang = "en";
+                lang = "ru";
             }
             return Ok(lang);
         }
