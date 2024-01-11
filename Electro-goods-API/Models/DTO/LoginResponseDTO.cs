@@ -1,6 +1,6 @@
 ﻿namespace Electro_goods_API.Models.DTO
 {
-    public class AuthenticateResponseDTO
+    public class LoginResponseDTO
     {
         public int Id { get; set; }
         public string FirstName { get; set; }

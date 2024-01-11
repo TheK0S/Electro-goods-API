@@ -68,7 +68,7 @@ namespace Electro_goods_API
                 $"Email: {context.User.FindFirstValue(ClaimTypes.Email)}");
 
             app.MapPost("/security/createToken",
-            [AllowAnonymous] (AuthenticateRequestDTO user) =>
+            [AllowAnonymous] (LoginRequestDTO user) =>
             {
                 if (user.Email == "TheKos" && user.Password == "TheKos123")
                 {
@@ -86,7 +86,7 @@ namespace Electro_goods_API
                             new Claim(JwtRegisteredClaimNames.Jti,
                             Guid.NewGuid().ToString())
                          }),
-                        Expires = DateTime.Now.AddSeconds(30),
+                        Expires = DateTime.Now.AddMinutes(1),
                         Issuer = issuer,
                         Audience = audience,
                         SigningCredentials = new SigningCredentials
