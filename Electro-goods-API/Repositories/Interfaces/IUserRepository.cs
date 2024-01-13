@@ -9,5 +9,6 @@ namespace Electro_goods_API.Repositories.Interfaces
         public Task<User> GetUserById(int id);
         public Task<User> GetUserByEmail(string email);
         public Task<User> CreateUser(User user);
+        public Task UpdateUser(int id, User user);
     }
 }

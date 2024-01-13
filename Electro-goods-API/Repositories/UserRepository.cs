@@ -60,6 +60,28 @@ namespace Electro_goods_API.Repositories
                 _logger.LogError(ex.Message);
                 throw;
             }
-        }    
+        }
+        public async Task UpdateUser(int id,User user)
+        {
+            if (id != user.Id)
+                throw new ArgumentOutOfRangeException("Wrong Id");
+
+            _context.Entry(user).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
     }
 }
