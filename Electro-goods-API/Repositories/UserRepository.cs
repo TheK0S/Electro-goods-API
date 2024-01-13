@@ -1,4 +1,5 @@
-﻿using Electro_goods_API.Models;
+﻿using Electro_goods_API.Exceptions;
+using Electro_goods_API.Models;
 using Electro_goods_API.Models.DTO;
 using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Repositories.Interfaces;
@@ -21,7 +22,7 @@ namespace Electro_goods_API.Repositories
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null)
-                throw new KeyNotFoundException();
+                throw new UserNotFoundException($"User with Id = {id} not found");
             return user;
         }
         public async Task<User> GetUserByEmail(string email)
@@ -41,7 +42,7 @@ namespace Electro_goods_API.Repositories
         public async Task<User> CreateUser(User user)
         {
             if (_context.Users == null)
-                throw new InvalidOperationException("Not found");
+                throw new NotFoundException();
 
             _context.Users.Add(user);
 
@@ -64,7 +65,7 @@ namespace Electro_goods_API.Repositories
         public async Task UpdateUser(int id,User user)
         {
             if (id != user.Id)
-                throw new ArgumentOutOfRangeException("Wrong Id");
+                throw new ArgumentException("Wrong Id");
 
             _context.Entry(user).State = EntityState.Modified;
 
