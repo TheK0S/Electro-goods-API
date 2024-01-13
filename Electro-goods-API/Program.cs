@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Electro_goods_API.Models.DTO;
 using System.Security.Claims;
+using System.Configuration;
 
 namespace Electro_goods_API
 {
@@ -39,10 +40,8 @@ namespace Electro_goods_API
                     };
                 });
             builder.Services.AddControllers();
-
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
             builder.Services.AddLogging();
             builder.Services.AddSingleton<IMapper, Mapper>();
             builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
@@ -74,8 +73,7 @@ namespace Electro_goods_API
                 {
                     var issuer = builder.Configuration["Jwt:Issuer"];
                     var audience = builder.Configuration["Jwt:Audience"];
-                    var key = Encoding.ASCII.GetBytes
-                    (builder.Configuration["Jwt:Key"]);
+                    var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"]);
                     var tokenDescriptor = new SecurityTokenDescriptor
                     {
                         Subject = new ClaimsIdentity(new[]

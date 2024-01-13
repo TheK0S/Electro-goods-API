@@ -93,7 +93,7 @@ namespace Electro_goods_API.Repositories
                 foreach (var attribute in filter.ProductAttributesDict)
                     query = query.Where(p => p.ProductAttributes.Any(pa =>
                         (pa.AttributeName == attribute.Key || pa.AttributeNameUK == attribute.Key) &&
-                        (pa.AttributeValue == attribute.Value || pa.AttributeValueUK == attribute.Value)));           
+                        (pa.AttributeValue == attribute.Value || pa.AttributeValueUK == attribute.Value)));         
 
             try
             {

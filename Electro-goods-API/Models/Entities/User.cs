@@ -15,11 +15,15 @@ namespace Electro_goods_API.Models.Entities
         [MaxLength(50), MinLength(3)]
         public string? Patronomic { get; set; }
         [Required]
+        [EmailAddress]
         public string? Email { get; set; }
         [Required]
+        [MinLength(8)]
         public string? Password { get; set; }
         [Required]
         public string? PhoneNumber { get; set; }
+        [Required]
+        [DataType(DataType.Date)]
         public DateTime Birthdate { get; set; }
         public DateTime CreationDate { get; set; }
         public bool IsActive { get; set; }
