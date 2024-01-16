@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Electro_goods_API.Exceptions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Text.Json;
@@ -15,7 +16,7 @@ namespace Electro_goods_API.Middlewares
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            var lang = context.Request.Headers["Api-Lang"].ToString();
+            context.Request.Headers.TryGetValue("Api-Lang", out var lang);
             if (string.IsNullOrEmpty(lang))
                 lang = "ru";
 
@@ -23,81 +24,154 @@ namespace Electro_goods_API.Middlewares
             {
                 await next(context);
             }
-            catch (HttpRequestException)
+            catch(Exception ex)
             {
-                ProblemDetails problem = new()
-                {
-                    Status = (int)HttpStatusCode.NotFound,
-                    Type = lang == "ru" ? "Ошибка подключения к серверу." : "Помилка при підключенні до сервера.",
-                    Title = lang == "ru" ? "Чтото пошло не так." : "Щось пішло не так.",
-                    Detail = lang == "ru" ? "Проверьте правильность URL и повторите запрос." : "Перевірте правильність URL та повторіть запит.",
-                };
-                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                await context.Response.WriteAsJsonAsync(problem);
-            }
-            catch (ArgumentNullException)
-            {
-                ProblemDetails problem = new()
-                {
-                    Status = (int)HttpStatusCode.BadRequest,
-                    Type = lang == "ru" ? "Ошибка в приложении клиента" : "Помилка у програмі клієнта",
-                    Title = lang == "ru" ? "Не указаны необходимые данные в запросе" : "Не вказані необхідні дані у запиті",
-                    Detail = lang == "ru" ? "Укажите все необходимые данные и повторите попытку" : "Вкажіть всі необхідні дані та повторіть спробу",
-                };
-                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                await context.Response.WriteAsJsonAsync(problem);
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                ProblemDetails problem = new()
-                {
-                    Status = (int)HttpStatusCode.BadRequest,
-                    Type = lang == "ru" ? "Ошибка в приложении клиента" : "Помилка у програмі клієнта",
-                    Title = lang == "ru" ? "Некорректные данные в запросе" : "Некоректні дані у запиті",
-                    Detail = e.Message,
-                };
-                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                await context.Response.WriteAsJsonAsync(problem);
-            }
-            catch (InvalidOperationException e)
-            {
-                ProblemDetails problem = new()
-                {
-                    Status = (int)HttpStatusCode.NotFound,
-                    Type = lang == "ru" ? "Ошибка при формировании ответа" : "Помилка для формування відповіді",
-                    Title = lang == "ru" ? "Запрашиваемый ресурс не найден" : "Затребуваний ресурс не знайдено",
-                    Detail = e.Message,
-                };
-                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                await context.Response.WriteAsJsonAsync(problem);
-            }
-            catch (DbUpdateConcurrencyException e)
-            {
-                ProblemDetails problem = new()
-                {
-                    Status = (int)HttpStatusCode.InternalServerError,
-                    Type = lang == "ru" ? "Ошибка при формировании ответа" : "Помилка для формування відповіді",
-                    Title = lang == "ru" ? "Не удалось получить данные из базы данных" : "Не вдалося отримати дані з бази даних",
-                    Detail = e.Message,
-                };
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                await context.Response.WriteAsJsonAsync(problem);
-            }
-            catch (Exception e)
-            {
+                ProblemDetails problem = new();
 
-                ProblemDetails problem = new()
+                switch (ex)
                 {
-                    Status = (int)HttpStatusCode.InternalServerError,
-                    Type = lang == "ru" ? "Ошибка сервева" : "Помилка для формування відповіді",
-                    Title = lang == "ru" ? "Внутренняя ошибка сервера при обработке запроса" : "\r\nВнутрішня помилка сервера під час обробки запиту",
-                    Detail = e.Message,
-                };
+                    case UserNotFoundException:
+                        problem.Status = (int)HttpStatusCode.NotFound;
+                        problem.Type = lang == "ru" ? "Ошибка" : "Помилка";
+                        problem.Title = lang == "ru" ? "Не найден пользователь указанный в запросе" : "Не знайдено користувача вказаного у запиті";
+                        problem.Detail = lang == "ru" ? "Измените параметры запроса и повторите попытку" : "Змініть параметри запиту та повторіть спробу";
 
-                _logger.LogError(e, e.Message);
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                await context.Response.WriteAsJsonAsync(problem);
+                        context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                        await context.Response.WriteAsJsonAsync(problem);
+                        break;
+
+
+                    case NotFoundException:
+                        problem.Status = (int)HttpStatusCode.NotFound;
+                        problem.Type = lang == "ru" ? "Ошибка" : "Помилка";
+                        problem.Title = lang == "ru" ? "Запрашиваемый ресурс не найден" : "Затребуваний ресурс не знайдено";
+                        problem.Detail = lang == "ru" ? "Измените параметры запроса и повторите попытку" : "Змініть параметри запиту та повторіть спробу";
+
+                        context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                        await context.Response.WriteAsJsonAsync(problem);
+                        break;
+
+
+                    case ArgumentNullException:
+                        problem.Status = (int)HttpStatusCode.BadRequest;
+                        problem.Type = lang == "ru" ? "Ошибка в приложении клиента" : "Помилка у програмі клієнта";
+                        problem.Title = lang == "ru" ? "Не указаны необходимые данные в запросе к серверу" : "Не вказані необхідні дані у запиті до сервера";
+                        problem.Detail = lang == "ru" ? "Укажите все необходимые данные и повторите попытку" : "Вкажіть всі необхідні дані та повторіть спробу";
+
+                        context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        await context.Response.WriteAsJsonAsync(problem);
+                        break;
+
+
+                    case ArgumentOutOfRangeException:
+                        problem.Status = (int)HttpStatusCode.BadRequest;
+                        problem.Type = lang == "ru" ? "Ошибка в приложении клиента" : "Помилка у програмі клієнта";
+                        problem.Title = lang == "ru" ? "Указаны неверные данные в запросе к серверу" : "Вказані невірні дані у запиті до сервера";
+                        problem.Detail = lang == "ru" ? "Укажите все необходимые данные и повторите попытку" : "Вкажіть всі необхідні дані та повторіть спробу";
+
+                        context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        await context.Response.WriteAsJsonAsync(problem);
+                        break;
+
+
+                    case ArgumentException:
+                        problem.Status = (int)HttpStatusCode.BadRequest;
+                        problem.Type = lang == "ru" ? "Ошибка в приложении клиента" : "Помилка у програмі клієнта";
+                        problem.Title = lang == "ru" ? "Не указаны необходимые данные в запросе к серверу" : "Не вказані необхідні дані у запиті до сервера";
+                        problem.Detail = lang == "ru" ? "Укажите все необходимые данные и повторите попытку" : "Вкажіть всі необхідні дані та повторіть спробу";
+
+                        context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        await context.Response.WriteAsJsonAsync(problem);
+                        break;
+
+
+                    case DbUpdateConcurrencyException:
+                        problem.Status = (int)HttpStatusCode.InternalServerError;
+                        problem.Type = lang == "ru" ? "Ошибка сервера" : "Помилка сервера";
+                        problem.Title = lang == "ru" ? "Запрос корректен, но произошла ошибка сервера при обработке запроса" : "Запит коректний, але помилка сервера при обробці запиту";
+                        problem.Detail = lang == "ru" ? "Повторите попытку позже" : "Повторіть спробу пізніше";
+
+                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                        await context.Response.WriteAsJsonAsync(problem);
+                        break;
+
+
+                    default:
+                        problem.Status = (int)HttpStatusCode.InternalServerError;
+                        problem.Type = lang == "ru" ? "Ошибка сервера" : "Помилка сервера";
+                        problem.Title = lang == "ru" ? "Внутренняя ошибка сервера при обработке запроса" : "Внутрішня помилка сервера під час обробки запиту";
+                        problem.Detail = "Unhandled server error";
+                        
+                        _logger.LogCritical(ex, ex.Message);
+                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                        await context.Response.WriteAsJsonAsync(problem);
+                        break;
+                }
+
             }
+            //catch (ArgumentNullException)
+            //{
+            //    ProblemDetails problem = new()
+            //    {
+            //        Status = (int)HttpStatusCode.BadRequest,
+            //        Type = lang == "ru" ? "Ошибка в приложении клиента" : "Помилка у програмі клієнта",
+            //        Title = lang == "ru" ? "Не указаны необходимые данные в запросе к серверу" : "Не вказані необхідні дані у запиті до сервера",
+            //        Detail = lang == "ru" ? "Укажите все необходимые данные и повторите попытку" : "Вкажіть всі необхідні дані та повторіть спробу",
+            //    };
+            //    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            //    await context.Response.WriteAsJsonAsync(problem);
+            //}
+            //catch (ArgumentOutOfRangeException e)
+            //{
+            //    ProblemDetails problem = new()
+            //    {
+            //        Status = (int)HttpStatusCode.BadRequest,
+            //        Type = lang == "ru" ? "Ошибка в приложении клиента" : "Помилка у програмі клієнта",
+            //        Title = lang == "ru" ? "Некорректные данные в запросе к серверу" : "Некоректні дані у запиті до сервера",
+            //        Detail = e.Message,
+            //    };
+            //    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            //    await context.Response.WriteAsJsonAsync(problem);
+            //}
+            //catch (InvalidOperationException e)
+            //{
+            //    ProblemDetails problem = new()
+            //    {
+            //        Status = (int)HttpStatusCode.NotFound,
+            //        Type = lang == "ru" ? "Ошибка при формировании ответа" : "Помилка для формування відповіді",
+            //        Title = lang == "ru" ? "Запрашиваемый ресурс не найден" : "Затребуваний ресурс не знайдено",
+            //        Detail = e.Message,
+            //    };
+            //    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+            //    await context.Response.WriteAsJsonAsync(problem);
+            //}
+            //catch (DbUpdateConcurrencyException e)
+            //{
+            //    ProblemDetails problem = new()
+            //    {
+            //        Status = (int)HttpStatusCode.InternalServerError,
+            //        Type = lang == "ru" ? "Ошибка при формировании ответа" : "Помилка для формування відповіді",
+            //        Title = lang == "ru" ? "Не удалось получить данные из базы данных" : "Не вдалося отримати дані з бази даних",
+            //        Detail = e.Message,
+            //    };
+            //    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            //    await context.Response.WriteAsJsonAsync(problem);
+            //}
+            //catch (Exception e)
+            //{
+
+            //    ProblemDetails problem = new()
+            //    {
+            //        Status = (int)HttpStatusCode.InternalServerError,
+            //        Type = lang == "ru" ? "Ошибка сервева" : "Помилка для формування відповіді",
+            //        Title = lang == "ru" ? "Внутренняя ошибка сервера при обработке запроса" : "\r\nВнутрішня помилка сервера під час обробки запиту",
+            //        Detail = e.Message,
+            //    };
+
+            //    _logger.LogCritical(e, e.Message);
+            //    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            //    await context.Response.WriteAsJsonAsync(problem);
+            //}
         }
     }
 }

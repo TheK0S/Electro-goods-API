@@ -1,4 +1,5 @@
-﻿using Electro_goods_API.Models;
+﻿using Electro_goods_API.Exceptions;
+using Electro_goods_API.Models;
 using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -44,7 +45,7 @@ namespace Electro_goods_API.Repositories
                 var country = await _context.Countries.FindAsync(id);
 
                 if (country == null)
-                    throw new InvalidOperationException("Country not found");
+                    throw new NotFoundException($"Country with id={id} not found");
 
                 return country;
             }
@@ -71,9 +72,7 @@ namespace Electro_goods_API.Repositories
             catch (DbUpdateConcurrencyException ex)
             {
                 if (!CountryExists(id))
-                {
-                    throw new InvalidOperationException("Country not found");
-                }
+                    throw new NotFoundException($"Country with id={id} not found");
 
                 _logger.LogError(ex.Message);
                 throw;
@@ -89,9 +88,7 @@ namespace Electro_goods_API.Repositories
         public async Task<Country> CreateCountry(Country country)
         {
             if (_context.Countries == null)
-            {
-                throw new InvalidOperationException("Counries not found");
-            }
+                throw new NotFoundException("Counries table not found");
 
             _context.Countries.Add(country);
 
@@ -116,15 +113,11 @@ namespace Electro_goods_API.Repositories
         public async Task DeleteCountry(int id)
         {
             if (_context.Countries == null)
-            {
-                throw new InvalidOperationException("Countries table not found");
-            }
+                throw new NotFoundException("Countries table not found");
             var country = await _context.Countries.FindAsync(id);
 
             if (country == null)
-            {
-                throw new InvalidOperationException("Country not found");
-            }
+                throw new NotFoundException($"Country with id={id} not found");
 
             _context.Countries.Remove(country);
 

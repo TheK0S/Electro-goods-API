@@ -1,4 +1,5 @@
-﻿using Electro_goods_API.Models;
+﻿using Electro_goods_API.Exceptions;
+using Electro_goods_API.Models;
 using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Models.Filters;
 using Electro_goods_API.Repositories.Interfaces;
@@ -186,7 +187,7 @@ namespace Electro_goods_API.Repositories
                     .FirstAsync(p => p.Id == id);
 
                 if (product == null)
-                    throw new InvalidOperationException("Product not found");
+                    throw new NotFoundException($"Product with id={id} not found");
 
                 return product;
             }
@@ -200,9 +201,7 @@ namespace Electro_goods_API.Repositories
         public async Task<Product> CreateProduct(Product product)
         {
             if (_context.Products == null)
-            {
-                throw new InvalidOperationException("Products table not found");
-            }
+                throw new NotFoundException("Products table not found");
 
             _context.Products.Add(product);
 
@@ -237,7 +236,7 @@ namespace Electro_goods_API.Repositories
             catch (DbUpdateConcurrencyException ex)
             {
                 if (!ProductExists(id))
-                    throw new InvalidOperationException("Product not found");
+                    throw new NotFoundException($"Product with id={id} not found");
 
                 _logger.LogError(ex, ex.Message);
                 throw;
@@ -252,15 +251,11 @@ namespace Electro_goods_API.Repositories
         public async Task DeleteProduct(int id)
         {
             if (_context.Products == null)
-            {
-                throw new InvalidOperationException("Products table not found");
-            }
-            var product = await _context.Products.FindAsync(id);
+                throw new NotFoundException("Products table not found");
 
+            var product = await _context.Products.FindAsync(id);
             if (product == null)
-            {
-                throw new InvalidOperationException("Product not found");
-            }
+                throw new NotFoundException($"Product with id={id} not found");
 
             _context.Products.Remove(product);
 
@@ -268,8 +263,9 @@ namespace Electro_goods_API.Repositories
             {
                 await _context.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex.Message, ex);
                 throw;
             }
         }

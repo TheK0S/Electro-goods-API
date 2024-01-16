@@ -1,4 +1,5 @@
-﻿using Electro_goods_API.Models;
+﻿using Electro_goods_API.Exceptions;
+using Electro_goods_API.Models;
 using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -44,7 +45,7 @@ namespace Electro_goods_API.Repositories
                 var orderStatus = await _context.OrderStatuses.FindAsync(id);
 
                 if (orderStatus == null)
-                    throw new InvalidOperationException("OrderStatus not found");
+                    throw new NotFoundException($"OrderStatus with id={id} not found");
 
                 return orderStatus;
             }
@@ -58,7 +59,7 @@ namespace Electro_goods_API.Repositories
         public async Task<OrderStatus> CreateOrderStatus(OrderStatus orderStatus)
         {
             if (_context.OrderStatuses == null)
-                throw new InvalidOperationException("OrderStatus not found");
+                throw new NotFoundException("OrderStatuses table not found");
 
             _context.OrderStatuses.Add(orderStatus);
 
@@ -93,7 +94,7 @@ namespace Electro_goods_API.Repositories
             catch (DbUpdateConcurrencyException ex)
             {
                 if (!OrderStatusExists(id))
-                    throw new InvalidOperationException("OrderStatus not found");
+                    throw new NotFoundException($"OrderStatus with id={id} not found";
 
                 _logger.LogError(ex.Message);
                 throw;
@@ -108,12 +109,12 @@ namespace Electro_goods_API.Repositories
         public async Task DeleteOrderStatus(int id)
         {
             if (_context.OrderStatuses == null)
-                throw new InvalidOperationException("Countries table not found");
+                throw new NotFoundException("Countries table not found");
 
             var orderStatus = await _context.OrderStatuses.FindAsync(id);
 
             if (orderStatus == null)
-                throw new InvalidOperationException("OrderStatus not found");
+                throw new NotFoundException($"OrderStatus with id={id} not found");
 
             _context.OrderStatuses.Remove(orderStatus);
 

@@ -1,8 +1,10 @@
-﻿using Electro_goods_API.Models;
+﻿using Electro_goods_API.Exceptions;
+using Electro_goods_API.Models;
 using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Repositories.Interfaces;
 using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Diagnostics.Metrics;
 
 namespace Electro_goods_API.Repositories
@@ -46,7 +48,7 @@ namespace Electro_goods_API.Repositories
                 var category = await _context.Categories.FindAsync(id);
 
                 if (category == null)
-                    throw new InvalidOperationException("Country not found");
+                    throw new NotFoundException($"Country with id={id} not found");
 
                 return category;
             }
@@ -60,9 +62,7 @@ namespace Electro_goods_API.Repositories
         public async Task<Category> CreateCategory(Category category)
         {
             if (_context.Categories == null)
-            {
-                throw new InvalidOperationException("Category not found");
-            }
+                throw new NotFoundException("Categories table not found");
 
             _context.Categories.Add(category);
 
@@ -97,7 +97,7 @@ namespace Electro_goods_API.Repositories
             catch (DbUpdateConcurrencyException ex)
             {
                 if (!CategoryExists(id))
-                    throw new InvalidOperationException("Category not found");
+                    throw new NotFoundException($"Country with id={id} not found");
 
                 _logger.LogError(ex.Message);
                 throw;
@@ -112,15 +112,11 @@ namespace Electro_goods_API.Repositories
         public async Task DeleteCategory(int id)
         {
             if (_context.Categories == null)
-            {
-                throw new InvalidOperationException("Categories table not found");
-            }
-            var category = await _context.Categories.FindAsync(id);
+                throw new NotFoundException("Categories table not found");
 
+            var category = await _context.Categories.FindAsync(id);
             if (category == null)
-            {
-                throw new InvalidOperationException("Category not found");
-            }
+                throw new NotFoundException($"Category with id={id} not found");
 
             _context.Categories.Remove(category);
 
@@ -128,8 +124,14 @@ namespace Electro_goods_API.Repositories
             {
                 await _context.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (DBConcurrencyException ex)
             {
+                _logger.LogError(ex, ex.Message);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
                 throw;
             }
         }
