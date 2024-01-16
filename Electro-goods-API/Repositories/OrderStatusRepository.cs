@@ -94,7 +94,7 @@ namespace Electro_goods_API.Repositories
             catch (DbUpdateConcurrencyException ex)
             {
                 if (!OrderStatusExists(id))
-                    throw new NotFoundException($"OrderStatus with id={id} not found";
+                    throw new NotFoundException($"OrderStatus with id={id} not found");
 
                 _logger.LogError(ex.Message);
                 throw;
