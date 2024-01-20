@@ -1,4 +1,5 @@
-﻿using Electro_goods_API.Models;
+﻿using Electro_goods_API.Exceptions;
+using Electro_goods_API.Models;
 using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -44,7 +45,7 @@ namespace Electro_goods_API.Repositories
                 var manufacturer = await _context.Manufacturers.FindAsync(id);
 
                 if (manufacturer == null)
-                    throw new InvalidOperationException("Manufacturer not found");
+                    throw new NotFoundException($"Manufacturer with id={id} not found");
 
                 return manufacturer;
             }
@@ -58,9 +59,7 @@ namespace Electro_goods_API.Repositories
         public async Task UpdateManufacturer(int id, Manufacturer manufacturer)
         {
             if (id != manufacturer.Id)
-            {
                 throw new ArgumentOutOfRangeException("Wrong Id");
-            }
 
             _context.Entry(manufacturer).State = EntityState.Modified;
 
@@ -71,9 +70,7 @@ namespace Electro_goods_API.Repositories
             catch (DbUpdateConcurrencyException ex)
             {
                 if (!ManufacturerExists(id))
-                {
-                    throw new InvalidOperationException("Manufacturer not found");
-                }
+                    throw new NotFoundException($"Manufacturer with id={id} not found");
 
                 _logger.LogError(ex.Message);
                 throw;
@@ -89,9 +86,7 @@ namespace Electro_goods_API.Repositories
         public async Task<Manufacturer> CreateManufacturer(Manufacturer manufacturer)
         {
             if (_context.Manufacturers == null)
-            {
-                throw new InvalidOperationException("Manufacturers table not found");
-            }
+                throw new NotFoundException("Manufacturers table not found");
 
             _context.Manufacturers.Add(manufacturer);
 
@@ -116,15 +111,11 @@ namespace Electro_goods_API.Repositories
         public async Task DeleteManufacturer(int id)
         {
             if (_context.Manufacturers == null)
-            {
-                throw new InvalidOperationException("Manufacturers table not found");
-            }
-            var manufacturer = await _context.Manufacturers.FindAsync(id);
+                throw new NotFoundException("Manufacturers table not found");
 
+            var manufacturer = await _context.Manufacturers.FindAsync(id);
             if (manufacturer == null)
-            {
-                throw new InvalidOperationException("Manufacturer not found");
-            }
+                throw new NotFoundException($"Manufacturer with id={id} not found");
 
             _context.Manufacturers.Remove(manufacturer);
 

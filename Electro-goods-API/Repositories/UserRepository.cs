@@ -21,6 +21,7 @@ namespace Electro_goods_API.Repositories
             var user = await _context.Users.FindAsync(id);
             if (user == null)
                 throw new UserNotFoundException($"User with Id = {id} not found");
+
             return user;
         }
         public async Task<User> GetUserByEmail(string email)
@@ -63,7 +64,7 @@ namespace Electro_goods_API.Repositories
         public async Task UpdateUser(int id,User user)
         {
             if (id != user.Id)
-                throw new ArgumentException("Wrong Id");
+                throw new ArgumentOutOfRangeException("Wrong Id");
 
             _context.Entry(user).State = EntityState.Modified;
 

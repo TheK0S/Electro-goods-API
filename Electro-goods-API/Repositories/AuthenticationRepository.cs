@@ -43,6 +43,11 @@ namespace Electro_goods_API.Repositories
 
                 return jwtToken;
             }
+            catch (ArgumentException ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                throw;
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message, ex);

@@ -1,4 +1,5 @@
-﻿using Electro_goods_API.Models;
+﻿using Electro_goods_API.Exceptions;
+using Electro_goods_API.Models;
 using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -43,7 +44,7 @@ namespace Electro_goods_API.Repositories
                 var order = await _context.Orders.FindAsync(id);
 
                 if (order == null)
-                    throw new InvalidOperationException("Order not found");
+                    throw new NotFoundException($"Order with id={id} not found");
 
                 return order;
             }
@@ -75,9 +76,7 @@ namespace Electro_goods_API.Repositories
         public async Task<Order> CreateOrder(Order order)
         {
             if (_context.Orders == null)
-            {
                 throw new InvalidOperationException("Orders table not found");
-            }
 
             _context.Orders.Add(order);
 
@@ -112,7 +111,7 @@ namespace Electro_goods_API.Repositories
             catch (DbUpdateConcurrencyException ex)
             {
                 if (!OrderExists(id))
-                    throw new InvalidOperationException("Order not found");
+                    throw new NotFoundException($"Order with id={id} not found");
 
                 _logger.LogError(ex.Message);
                 throw;
@@ -127,15 +126,11 @@ namespace Electro_goods_API.Repositories
         public async Task DeleteOrder(int id)
         {
             if (_context.Orders == null)
-            {
-                throw new InvalidOperationException("Orders table not found");
-            }
-            var order = await _context.Orders.FindAsync(id);
+                throw new NotFoundException("Orders table not found");
 
+            var order = await _context.Orders.FindAsync(id);
             if (order == null)
-            {
-                throw new InvalidOperationException("Order not found");
-            }
+                throw new NotFoundException($"Order with id={id} not found");
 
             _context.Orders.Remove(order);
 
@@ -143,8 +138,9 @@ namespace Electro_goods_API.Repositories
             {
                 await _context.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex.Message, ex);
                 throw;
             }
         }

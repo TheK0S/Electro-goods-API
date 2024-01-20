@@ -1,4 +1,5 @@
-﻿using Electro_goods_API.Models;
+﻿using Electro_goods_API.Exceptions;
+using Electro_goods_API.Models;
 using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -38,15 +39,14 @@ namespace Electro_goods_API.Repositories
 
         public async Task<Role> GetRoleById(int id)
         {
+            if (id <= 0)
+                throw new ArgumentOutOfRangeException("Wrong Id");
+
             try
             {
-                if(id <= 0)
-                    throw new ArgumentOutOfRangeException("Wrong Id");
-
                 var role = await _context.Roles.FindAsync(id);
-
                 if (role == null)
-                    throw new InvalidOperationException("Not found");
+                    throw new NotFoundException($"Role with id={id} not found");
 
                 return role;
             }
@@ -60,9 +60,7 @@ namespace Electro_goods_API.Repositories
         public async Task UpdateRole(int id, Role role)
         {
             if (id != role.Id)
-            {
                 throw new ArgumentOutOfRangeException("Wrong Id");
-            }
 
             _context.Entry(role).State = EntityState.Modified;
 
@@ -73,9 +71,7 @@ namespace Electro_goods_API.Repositories
             catch (DbUpdateConcurrencyException ex)
             {
                 if (!RoleExists(id))
-                {
-                    throw new InvalidOperationException("Not found");
-                }
+                    throw new InvalidOperationException($"Role with id={id} not found");
 
                 _logger.LogError(ex.Message);
                 throw;
@@ -91,9 +87,7 @@ namespace Electro_goods_API.Repositories
         public async Task<Role> CreateRole(Role role)
         {
             if (_context.Roles == null)
-            {
-                throw new InvalidOperationException("Not found");
-            }
+                throw new NotFoundException("Roles table not found");
 
             _context.Roles.Add(role);
 
@@ -118,12 +112,11 @@ namespace Electro_goods_API.Repositories
         public async Task DeleteRole(int id)
         {
             if (_context.Roles == null)
-                throw new InvalidOperationException("Not found");
+                throw new NotFoundException("Roles table not found");
 
-            var role = await _context.Roles.FindAsync(id);
-            
+            var role = await _context.Roles.FindAsync(id);            
             if (role == null)
-                throw new InvalidOperationException("Not found");
+                throw new NotFoundException($"Role with id={id} not found");
 
             _context.Roles.Remove(role);
 
