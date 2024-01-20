@@ -39,6 +39,15 @@ namespace Electro_goods_API
                         ValidateIssuerSigningKey = true
                     };
                 });
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowLocalhost3000", builder =>
+                {
+                    builder.WithOrigins("http://localhost:3000")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
             builder.Services.AddControllers();
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -59,6 +68,8 @@ namespace Electro_goods_API
             }
 
             //app.UseHttpsRedirection();
+
+            app.UseCors("AllowLocalhost3000");
 
             app.MapGet("/security/getMessage", [Authorize] (HttpContext context) =>
                 $"Time: \n" +
