@@ -109,69 +109,6 @@ namespace Electro_goods_API.Middlewares
                 }
 
             }
-            //catch (ArgumentNullException)
-            //{
-            //    ProblemDetails problem = new()
-            //    {
-            //        Status = (int)HttpStatusCode.BadRequest,
-            //        Type = lang == "ru" ? "Ошибка в приложении клиента" : "Помилка у програмі клієнта",
-            //        Title = lang == "ru" ? "Не указаны необходимые данные в запросе к серверу" : "Не вказані необхідні дані у запиті до сервера",
-            //        Detail = lang == "ru" ? "Укажите все необходимые данные и повторите попытку" : "Вкажіть всі необхідні дані та повторіть спробу",
-            //    };
-            //    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            //    await context.Response.WriteAsJsonAsync(problem);
-            //}
-            //catch (ArgumentOutOfRangeException e)
-            //{
-            //    ProblemDetails problem = new()
-            //    {
-            //        Status = (int)HttpStatusCode.BadRequest,
-            //        Type = lang == "ru" ? "Ошибка в приложении клиента" : "Помилка у програмі клієнта",
-            //        Title = lang == "ru" ? "Некорректные данные в запросе к серверу" : "Некоректні дані у запиті до сервера",
-            //        Detail = e.Message,
-            //    };
-            //    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            //    await context.Response.WriteAsJsonAsync(problem);
-            //}
-            //catch (InvalidOperationException e)
-            //{
-            //    ProblemDetails problem = new()
-            //    {
-            //        Status = (int)HttpStatusCode.NotFound,
-            //        Type = lang == "ru" ? "Ошибка при формировании ответа" : "Помилка для формування відповіді",
-            //        Title = lang == "ru" ? "Запрашиваемый ресурс не найден" : "Затребуваний ресурс не знайдено",
-            //        Detail = e.Message,
-            //    };
-            //    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-            //    await context.Response.WriteAsJsonAsync(problem);
-            //}
-            //catch (DbUpdateConcurrencyException e)
-            //{
-            //    ProblemDetails problem = new()
-            //    {
-            //        Status = (int)HttpStatusCode.InternalServerError,
-            //        Type = lang == "ru" ? "Ошибка при формировании ответа" : "Помилка для формування відповіді",
-            //        Title = lang == "ru" ? "Не удалось получить данные из базы данных" : "Не вдалося отримати дані з бази даних",
-            //        Detail = e.Message,
-            //    };
-            //    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            //    await context.Response.WriteAsJsonAsync(problem);
-            //}
-            //catch (Exception e)
-            //{
-
-            //    ProblemDetails problem = new()
-            //    {
-            //        Status = (int)HttpStatusCode.InternalServerError,
-            //        Type = lang == "ru" ? "Ошибка сервева" : "Помилка для формування відповіді",
-            //        Title = lang == "ru" ? "Внутренняя ошибка сервера при обработке запроса" : "\r\nВнутрішня помилка сервера під час обробки запиту",
-            //        Detail = e.Message,
-            //    };
-
-            //    _logger.LogCritical(e, e.Message);
-            //    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            //    await context.Response.WriteAsJsonAsync(problem);
-            //}
         }
     }
 }

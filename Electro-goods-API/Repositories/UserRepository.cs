@@ -1,10 +1,8 @@
 ﻿using Electro_goods_API.Exceptions;
 using Electro_goods_API.Models;
-using Electro_goods_API.Models.DTO;
 using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
 
 namespace Electro_goods_API.Repositories
 {
