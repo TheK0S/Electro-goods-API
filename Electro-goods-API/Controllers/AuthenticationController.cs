@@ -1,4 +1,5 @@
-﻿using Electro_goods_API.Helpers;
+﻿using Electro_goods_API.Exceptions;
+using Electro_goods_API.Helpers;
 using Electro_goods_API.Models.DTO;
 using Electro_goods_API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,7 @@ namespace Electro_goods_API.Controllers
         {
             var user = await _userRepository.GetUserByEmail(loginRequest.Email);
             if (user == null)
-                throw new Exception("User not found");
+                throw new UserNotFoundException("User not found");
 
             string requestHeshedPassword = HashPasswordHelper.HashPasword(loginRequest.Password);
             if (requestHeshedPassword != user.Password)

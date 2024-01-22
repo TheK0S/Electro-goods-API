@@ -35,7 +35,7 @@ namespace Electro_goods_API
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
                         ValidateIssuer = true,
                         ValidateAudience = true,
-                        ValidateLifetime = false,
+                        ValidateLifetime = true,
                         ValidateIssuerSigningKey = true
                     };
                 });
@@ -46,7 +46,7 @@ namespace Electro_goods_API
             builder.Services.AddSingleton<IMapper, Mapper>();
             builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
             builder.Services.AddRepository();
-            
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -61,10 +61,25 @@ namespace Electro_goods_API
             //app.UseHttpsRedirection();
 
             app.MapGet("/security/getMessage", [Authorize] (HttpContext context) =>
-                $"Time: \n" +
-                $"Id: {context.User.FindFirstValue("Id")}\n" +
-                $"NameId: {context.User.FindFirstValue(JwtRegisteredClaimNames.NameId)}\n" +
-                $"Email: {context.User.FindFirstValue(ClaimTypes.Email)}");
+            {
+                var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
+
+
+                // Декодируем токен
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+
+                // Извлекаем информацию о сроке жизни токена
+                var expirationTime = jsonToken.ValidTo;
+                return $"Role: {context.User.FindFirstValue(ClaimTypes.Role)}\n" +
+                    $"Id: {context.User.FindFirstValue(ClaimTypes.NameIdentifier)}\n" +
+                    $"Email: {context.User.FindFirstValue(ClaimTypes.Email)}\n" +
+                    $"Expires: {expirationTime}\n" +
+                    $"DateTime: {DateTime.Now} \n";
+            });
+        
+                
 
             
             app.UseAuthentication();

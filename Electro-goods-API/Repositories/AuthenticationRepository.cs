@@ -40,6 +40,8 @@ namespace Electro_goods_API.Repositories
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 var jwtToken = tokenHandler.WriteToken(token);
+                Console.WriteLine($"expires: {tokenDescriptor.Expires}");
+                Console.WriteLine($"now: {DateTime.Now}");
 
                 return jwtToken;
             }
