@@ -225,6 +225,42 @@ namespace Electro_goods_API.Repositories
                     .Include(p => p.Country)
                     .Include(p => p.Manufacturer)
                     .Include(p => p.ProductAttributes)
+                    .Select(p => new Product
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        NameUK = p.NameUK,
+                        Description = p.Description,
+                        DescriptionUK = p.DescriptionUK,
+                        ImgPath = p.ImgPath,
+                        Price = p.Price,
+                        StockQuantity = p.StockQuantity,
+                        Discount = p.Discount,
+                        IsActive = p.IsActive,
+                        CategoryId = p.CategoryId,
+                        CountryId = p.CountryId,
+                        ManufacturerId = p.ManufacturerId,
+                        Category = new Category
+                        {
+                            Id = p.Category.Id,
+                            Name = p.Category.Name,
+                            NameUK = p.Category.NameUK
+                        },
+                        Country = new Country
+                        {
+                            Id = p.Country.Id,
+                            Name = p.Country.Name,
+                            NameUK = p.Country.NameUK
+                        },
+                        Manufacturer = new Manufacturer
+                        {
+                            Id = p.Manufacturer.Id,
+                            Name = p.Manufacturer.Name,
+                            NameUK = p.Manufacturer.NameUK
+                        },
+                        ProductAttributes = p.ProductAttributes.ToList()
+                    }
+                    )
                     .FirstAsync(p => p.Id == id);
 
                 if (product == null)
