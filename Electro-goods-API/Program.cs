@@ -8,9 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Electro_goods_API.Models.DTO;
 using System.Security.Claims;
-using System.Configuration;
 
 namespace Electro_goods_API
 {

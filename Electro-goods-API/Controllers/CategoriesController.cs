@@ -29,11 +29,12 @@ namespace Electro_goods_API.Controllers
         }
 
         // GET: api/Categories/5
-        public async Task<ActionResult<List<CategoryDTO>>> GetCategoriesById(int id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<CategoryDTO>> GetCategoryById(int id)
         {
-            var categories = await _service.GetCategoryById(id);
-            var categoriesDto = _mapper.MapCategoryToCategoryDTO(categories, _mapper.GetLanguageFromHeaders(Request.Headers));
-            return Ok(categoriesDto);
+            var category = await _service.GetCategoryById(id);
+            var categoryDto = _mapper.MapCategoryToCategoryDTO(category, _mapper.GetLanguageFromHeaders(Request.Headers));
+            return Ok(categoryDto);
         }
     }
 }
