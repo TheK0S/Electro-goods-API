@@ -259,8 +259,7 @@ namespace Electro_goods_API.Repositories
                             NameUK = p.Manufacturer.NameUK
                         },
                         ProductAttributes = p.ProductAttributes.ToList()
-                    }
-                    )
+                    })
                     .FirstAsync(p => p.Id == id);
 
                 if (product == null)
