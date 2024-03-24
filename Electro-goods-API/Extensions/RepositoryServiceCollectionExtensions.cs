@@ -1,7 +1,7 @@
 ﻿using Electro_goods_API.Repositories;
 using Electro_goods_API.Repositories.Interfaces;
 
-namespace Electro_goods_API.Middlewares
+namespace Electro_goods_API.Extensions
 {
     public static class RepositoryServiceCollectionExtensions
     {
