@@ -9,11 +9,9 @@ namespace Electro_goods_API.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _context;
-        private readonly ILogger<UserRepository> _logger;
-        public UserRepository(AppDbContext context, ILogger<UserRepository> logger)
+        public UserRepository(AppDbContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
         public async Task<User> GetUserById(int id)
@@ -26,17 +24,9 @@ namespace Electro_goods_API.Repositories
         }
         public async Task<User> GetUserByEmail(string email)
         {
-            try
-            {
-                return await _context.Users
+            return await _context.Users
                     .Include(u => u.Role)
                     .FirstAsync(x => x.Email == email);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message, ex);
-                throw;
-            }
         }
         public async Task<User> CreateUser(User user)
         {
@@ -44,22 +34,9 @@ namespace Electro_goods_API.Repositories
                 throw new NotFoundException();
 
             _context.Users.Add(user);
+            await _context.SaveChangesAsync();
 
-            try
-            {
-                await _context.SaveChangesAsync();
-                return user;
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
+            return user;
         }
         public async Task UpdateUser(int id,User user)
         {
@@ -67,21 +44,7 @@ namespace Electro_goods_API.Repositories
                 throw new ArgumentOutOfRangeException("Wrong Id");
 
             _context.Entry(user).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
+            await _context.SaveChangesAsync();
         }
     }
 }

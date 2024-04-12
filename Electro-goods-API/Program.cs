@@ -2,12 +2,9 @@ using Electro_goods_API.Mapping;
 using Electro_goods_API.Mapping.Interfaces;
 using Electro_goods_API.Middlewares;
 using Electro_goods_API.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using System.Security.Claims;
 using Electro_goods_API.Extensions;
 
@@ -40,7 +37,6 @@ namespace Electro_goods_API
             }
 
             //app.UseHttpsRedirection();
-
             app.UseCors("AllowLocalhost3000");
             app.UseAuthentication();
             app.UseAuthorization();

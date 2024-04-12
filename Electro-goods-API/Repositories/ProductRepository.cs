@@ -4,18 +4,15 @@ using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Models.Filters;
 using Electro_goods_API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Electro_goods_API.Repositories
 {
     public class ProductRepository : IProductRepository
     {
         private readonly AppDbContext _context;
-        private readonly ILogger<ProductRepository> _logger;
-        public ProductRepository(AppDbContext context, ILogger<ProductRepository> logger)
+        public ProductRepository(AppDbContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
         public async Task<List<Product>> GetProducts(int page, int pageSize, ProductFilter filter)
@@ -57,15 +54,7 @@ namespace Electro_goods_API.Repositories
                 .Include(p => p.Manufacturer)
                 .Include(p => p.ProductAttributes);
 
-            try
-            {
-                return await query.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                throw;
-            }
+            return await query.ToListAsync();
         }
 
         public async Task<int> GetProductsCount(ProductFilter filter)
@@ -94,94 +83,59 @@ namespace Electro_goods_API.Repositories
                 foreach (var attribute in filter.ProductAttributesDict)
                     query = query.Where(p => p.ProductAttributes.Any(pa =>
                         (pa.AttributeName == attribute.Key || pa.AttributeNameUK == attribute.Key) &&
-                        (pa.AttributeValue == attribute.Value || pa.AttributeValueUK == attribute.Value)));         
+                        (pa.AttributeValue == attribute.Value || pa.AttributeValueUK == attribute.Value)));
 
-            try
-            {
-                return await query.CountAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                throw;
-            }
+            return await query.CountAsync();
         }
 
         public async Task<List<Product>> GetAllProducts()
         {
-            try
-            {
-                return await _context.Products
+            return await _context.Products
                     .Include(p => p.Category)
                     .Include(p => p.Country)
                     .Include(p => p.Manufacturer)
                     .Include(p => p.ProductAttributes)
                     .Select(p => new Product
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        NameUK = p.NameUK,
+                        Description = p.Description,
+                        DescriptionUK = p.DescriptionUK,
+                        ImgPath = p.ImgPath,
+                        Price = p.Price,
+                        StockQuantity = p.StockQuantity,
+                        Discount = p.Discount,
+                        IsActive = p.IsActive,
+                        CategoryId = p.CategoryId,
+                        CountryId = p.CountryId,
+                        ManufacturerId = p.ManufacturerId,
+                        Category = new Category
                         {
-                            Id = p.Id,
-                            Name = p.Name,
-                            NameUK = p.NameUK,
-                            Description = p.Description,
-                            DescriptionUK = p.DescriptionUK,
-                            ImgPath = p.ImgPath,
-                            Price = p.Price,
-                            StockQuantity = p.StockQuantity,
-                            Discount = p.Discount,
-                            IsActive = p.IsActive,
-                            CategoryId = p.CategoryId,
-                            CountryId = p.CountryId,
-                            ManufacturerId = p.ManufacturerId,
-                            Category = new Category
-                            {
-                                Id = p.Category.Id,
-                                Name = p.Category.Name,
-                                NameUK = p.Category.NameUK 
-                            },
-                            Country = new Country
-                            {
-                                Id = p.Country.Id,
-                                Name = p.Country.Name,
-                                NameUK = p.Country.NameUK
-                            },
-                            Manufacturer = new Manufacturer
-                            {
-                                Id = p.Manufacturer.Id,
-                                Name = p.Manufacturer.Name,
-                                NameUK = p.Manufacturer.NameUK
-                            },
-                            ProductAttributes = p.ProductAttributes.ToList()
-                        }
-                    )
+                            Id = p.Category.Id,
+                            Name = p.Category.Name,
+                            NameUK = p.Category.NameUK
+                        },
+                        Country = new Country
+                        {
+                            Id = p.Country.Id,
+                            Name = p.Country.Name,
+                            NameUK = p.Country.NameUK
+                        },
+                        Manufacturer = new Manufacturer
+                        {
+                            Id = p.Manufacturer.Id,
+                            Name = p.Manufacturer.Name,
+                            NameUK = p.Manufacturer.NameUK
+                        },
+                        ProductAttributes = p.ProductAttributes.ToList()
+                    })
                     .ToListAsync();
-            }
-            catch (ArgumentNullException ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
         }
 
         public async Task<int> GetAllProductsCount()
         {
-            try
-            {
-                return await _context.Products.CountAsync();
-            }
-            catch (ArgumentNullException ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
+            return await _context.Products.CountAsync();
         }
 
         public async Task<List<Product>> GetDiscountedProducts(int page, int pageSize)
@@ -193,24 +147,11 @@ namespace Electro_goods_API.Repositories
             var query = _context.Products.Where(p => p.Discount > 0).AsQueryable();
             query = query.Skip(skipAmount).Take(pageSize);
 
-            try
-            {
-                return await _context.Products
+            return await _context.Products
                     .Where(p => p.Discount > 0)
                     .Skip(skipAmount)
                     .Take(pageSize)
                     .ToListAsync();
-            }
-            catch (ArgumentNullException ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
         }
 
         public async Task<Product> GetProductById(int id)
@@ -218,9 +159,7 @@ namespace Electro_goods_API.Repositories
             if (id <= 0)
                 throw new ArgumentOutOfRangeException("Wrong Id");
 
-            try
-            {
-                var product = await _context.Products
+            var product = await _context.Products
                     .Include(p => p.Category)
                     .Include(p => p.Country)
                     .Include(p => p.Manufacturer)
@@ -262,40 +201,18 @@ namespace Electro_goods_API.Repositories
                     })
                     .FirstAsync(p => p.Id == id);
 
-                if (product == null)
-                    throw new NotFoundException($"Product with id={id} not found");
+            if (product == null)
+                throw new NotFoundException($"Product with id={id} not found");
 
-                return product;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                throw;
-            }
+            return product;
         }
 
         public async Task<Product> CreateProduct(Product product)
         {
-            if (_context.Products == null)
-                throw new NotFoundException("Products table not found");
-
             _context.Products.Add(product);
+            await _context.SaveChangesAsync();
 
-            try
-            {
-                await _context.SaveChangesAsync();
-                return product;
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                throw;
-            }
+            return product;
         }
 
         public async Task UpdateProduct(int id, Product product)
@@ -304,51 +221,17 @@ namespace Electro_goods_API.Repositories
                 throw new ArgumentOutOfRangeException("Wrong Id");
 
             _context.Entry(product).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                if (!ProductExists(id))
-                    throw new NotFoundException($"Product with id={id} not found");
-
-                _logger.LogError(ex, ex.Message);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                throw;
-            }
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteProduct(int id)
         {
-            if (_context.Products == null)
-                throw new NotFoundException("Products table not found");
-
             var product = await _context.Products.FindAsync(id);
             if (product == null)
                 throw new NotFoundException($"Product with id={id} not found");
 
             _context.Products.Remove(product);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message, ex);
-                throw;
-            }
-        }
-
-        private bool ProductExists(int id)
-        {
-            return (_context.Categories?.Any(e => e.Id == id)).GetValueOrDefault();
+            await _context.SaveChangesAsync();
         }
     }
 }

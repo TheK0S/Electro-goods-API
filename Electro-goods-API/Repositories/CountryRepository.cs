@@ -9,132 +9,56 @@ namespace Electro_goods_API.Repositories
     public class CountryRepository : ICountryRepositiry
     {
         private readonly AppDbContext _context;
-        private readonly ILogger<CountryRepository> _logger;
 
-        public CountryRepository(AppDbContext context, ILogger<CountryRepository> logger)
+        public CountryRepository(AppDbContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
         public async Task<List<Country>> GetAllCountries()
         {
-            try
-            {
-                return await _context.Countries.ToListAsync();
-            }
-            catch (ArgumentNullException ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
+            return await _context.Countries.ToListAsync();
         }
 
         public async Task<Country> GetCountryById(int id)
         {
-            try
-            {
-                if (id <= 0)
-                    throw new ArgumentOutOfRangeException("Wrong Id");
+            if (id <= 0)
+                throw new ArgumentOutOfRangeException("Wrong Id");
 
-                var country = await _context.Countries.FindAsync(id);
+            var country = await _context.Countries.FindAsync(id);
 
-                if (country == null)
-                    throw new NotFoundException($"Country with id={id} not found");
+            if (country == null)
+                throw new NotFoundException($"Country with id={id} not found");
 
-                return country;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
+            return country;
         }
 
         public async Task UpdateCountry(int id, Country country)
         {
             if (id != country.Id)
-            {
                 throw new ArgumentOutOfRangeException("Wrong Id");
-            }
 
             _context.Entry(country).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                if (!CountryExists(id))
-                    throw new NotFoundException($"Country with id={id} not found");
-
-                _logger.LogError(ex.Message);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
+            await _context.SaveChangesAsync();
         }
 
 
         public async Task<Country> CreateCountry(Country country)
         {
-            if (_context.Countries == null)
-                throw new NotFoundException("Counries table not found");
-
             _context.Countries.Add(country);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-                return country;
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
-
+            await _context.SaveChangesAsync();
+            return country;
         }
 
         public async Task DeleteCountry(int id)
         {
-            if (_context.Countries == null)
-                throw new NotFoundException("Countries table not found");
             var country = await _context.Countries.FindAsync(id);
 
             if (country == null)
                 throw new NotFoundException($"Country with id={id} not found");
 
             _context.Countries.Remove(country);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-        }
-
-        private bool CountryExists(int id)
-        {
-            return (_context.Countries?.Any(e => e.Id == id)).GetValueOrDefault();
+            await _context.SaveChangesAsync();
         }
     }
 }

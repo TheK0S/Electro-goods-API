@@ -9,74 +9,34 @@ namespace Electro_goods_API.Repositories
     public class OrderStatusRepository : IOrderStatusRepository
     {
         private readonly AppDbContext _context;
-        private readonly ILogger<OrderStatusRepository> _logger;
-        public OrderStatusRepository(AppDbContext context, ILogger<OrderStatusRepository> logger)
+        public OrderStatusRepository(AppDbContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
         public async Task<List<OrderStatus>> GetAllOrderStatuses()
         {
-            try
-            {
-                return await _context.OrderStatuses.ToListAsync();
-            }
-            catch (ArgumentNullException ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
+            return await _context.OrderStatuses.ToListAsync();
         }
 
         public async Task<OrderStatus> GetOrderStatusById(int id)
         {
-            try
-            {
-                if (id <= 0)
-                    throw new ArgumentOutOfRangeException("Wrong Id");
+            if (id <= 0)
+                throw new ArgumentOutOfRangeException("Wrong Id");
 
-                var orderStatus = await _context.OrderStatuses.FindAsync(id);
+            var orderStatus = await _context.OrderStatuses.FindAsync(id);
+            if (orderStatus == null)
+                throw new NotFoundException($"OrderStatus with id={id} not found");
 
-                if (orderStatus == null)
-                    throw new NotFoundException($"OrderStatus with id={id} not found");
-
-                return orderStatus;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
+            return orderStatus;
         }
 
         public async Task<OrderStatus> CreateOrderStatus(OrderStatus orderStatus)
         {
-            if (_context.OrderStatuses == null)
-                throw new NotFoundException("OrderStatuses table not found");
-
             _context.OrderStatuses.Add(orderStatus);
+            await _context.SaveChangesAsync();
 
-            try
-            {
-                await _context.SaveChangesAsync();
-                return orderStatus;
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
+            return orderStatus;
         }
 
         public async Task UpdateOrderStatus(int id, OrderStatus orderStatus)
@@ -85,51 +45,17 @@ namespace Electro_goods_API.Repositories
                 throw new ArgumentOutOfRangeException("Wrong Id");
 
             _context.Entry(orderStatus).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                if (!OrderStatusExists(id))
-                    throw new NotFoundException($"OrderStatus with id={id} not found");
-
-                _logger.LogError(ex.Message);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteOrderStatus(int id)
         {
-            if (_context.OrderStatuses == null)
-                throw new NotFoundException("Countries table not found");
-
             var orderStatus = await _context.OrderStatuses.FindAsync(id);
-
             if (orderStatus == null)
                 throw new NotFoundException($"OrderStatus with id={id} not found");
 
             _context.OrderStatuses.Remove(orderStatus);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        private bool OrderStatusExists(int id)
-        {
-            return (_context.Countries?.Any(e => e.Id == id)).GetValueOrDefault();
+            await _context.SaveChangesAsync();
         }
     }
 }

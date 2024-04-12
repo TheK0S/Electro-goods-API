@@ -9,29 +9,14 @@ namespace Electro_goods_API.Repositories
     public class OrderRepository : IOrderRepository
     {
         private readonly AppDbContext _context;
-        private readonly ILogger<OrderRepository> _logger;
-        public OrderRepository(AppDbContext context, ILogger<OrderRepository> logger)
+        public OrderRepository(AppDbContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
         public async Task<List<Order>> GetAllOrders()
         {
-            try
-            {
-                return await _context.Orders.ToListAsync();
-            }
-            catch (ArgumentNullException ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
+            return await _context.Orders.ToListAsync();
         }
 
         public async Task<Order> GetOrderById(int id)
@@ -39,62 +24,24 @@ namespace Electro_goods_API.Repositories
             if (id <= 0)
                 throw new ArgumentOutOfRangeException("Wrong Id");
 
-            try
-            {
-                var order = await _context.Orders.FindAsync(id);
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null)
+                throw new NotFoundException($"Order with id={id} not found");
 
-                if (order == null)
-                    throw new NotFoundException($"Order with id={id} not found");
-
-                return order;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
+            return order;
         }
 
         public async Task<List<Order>> GetOrdersByUserId(int id)
         {
-            try
-            {
-                return await _context.Orders.Where(o => o.UserId == id).ToListAsync();
-            }
-            catch (ArgumentNullException ex)
-            {
-                _logger.LogError(ex.Message, ex);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message, ex);
-                throw;
-            }
+            return await _context.Orders.Where(o => o.UserId == id).ToListAsync();
         }
 
         public async Task<Order> CreateOrder(Order order)
         {
-            if (_context.Orders == null)
-                throw new InvalidOperationException("Orders table not found");
-
             _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
 
-            try
-            {
-                await _context.SaveChangesAsync();
-                return order;
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
+            return order;
         }
 
         public async Task UpdateOrder(int id, Order order)
@@ -103,51 +50,17 @@ namespace Electro_goods_API.Repositories
                 throw new ArgumentOutOfRangeException("Wrong Id");
 
             _context.Entry(order).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                if (!OrderExists(id))
-                    throw new NotFoundException($"Order with id={id} not found");
-
-                _logger.LogError(ex.Message);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteOrder(int id)
         {
-            if (_context.Orders == null)
-                throw new NotFoundException("Orders table not found");
-
             var order = await _context.Orders.FindAsync(id);
             if (order == null)
                 throw new NotFoundException($"Order with id={id} not found");
 
             _context.Orders.Remove(order);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message, ex);
-                throw;
-            }
-        }
-
-        private bool OrderExists(int id)
-        {
-            return (_context.Orders?.Any(e => e.Id == id)).GetValueOrDefault();
+            await _context.SaveChangesAsync();
         }
     }
 }

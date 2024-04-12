@@ -1,5 +1,4 @@
-﻿using Azure.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Electro_goods_API.ActionFilters
