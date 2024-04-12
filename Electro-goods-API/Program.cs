@@ -48,7 +48,7 @@ namespace Electro_goods_API
             });
             builder.Services.AddControllers();
             builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("HostingConnection")));
             builder.Services.AddLogging();
             builder.Services.AddSingleton<IMapper, Mapper>();
             builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
