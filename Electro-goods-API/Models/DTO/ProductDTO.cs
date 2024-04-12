@@ -1,6 +1,4 @@
-﻿using Electro_goods_API.Models.Entities;
-
-namespace Electro_goods_API.Models.DTO
+﻿namespace Electro_goods_API.Models.DTO
 {
     public class ProductDTO
     {

@@ -29,6 +29,7 @@ namespace Electro_goods_API.Controllers
             [FromQuery] int maxPrice,
             [FromQuery] int categoryId,
             [FromQuery] int manufacturerId,
+            [FromQuery] string partOfName,
             [FromQuery] Dictionary<string, string> attributes)
         {
             if (attributes.ContainsKey("page")) attributes.Remove("page");
@@ -36,6 +37,7 @@ namespace Electro_goods_API.Controllers
             if (attributes.ContainsKey("minPrice")) attributes.Remove("minPrice");
             if (attributes.ContainsKey("maxPrice")) attributes.Remove("maxPrice");
             if (attributes.ContainsKey("categoryId")) attributes.Remove("categoryId");
+            if (attributes.ContainsKey("partOfName")) attributes.Remove("partOfName");
             if (attributes.ContainsKey("manufacturerId")) attributes.Remove("manufacturerId");
 
             ProductFilter filter = new ProductFilter
@@ -44,6 +46,7 @@ namespace Electro_goods_API.Controllers
                 MaxPrice = maxPrice,
                 CategoryId = categoryId,
                 ManufacturerId = manufacturerId,
+                PartOfName = partOfName,
                 ProductAttributesDict = attributes
             };
 
@@ -59,6 +62,7 @@ namespace Electro_goods_API.Controllers
             [FromQuery] int maxPrice,
             [FromQuery] int categoryId,
             [FromQuery] int manufacturerId,
+            [FromQuery] string partOfName,
             [FromQuery] Dictionary<string, string> attributes)
         {
             if (attributes.ContainsKey("minPrice")) attributes.Remove("minPrice");
@@ -72,6 +76,7 @@ namespace Electro_goods_API.Controllers
                 MaxPrice = maxPrice,
                 CategoryId = categoryId,
                 ManufacturerId = manufacturerId,
+                PartOfName = partOfName,
                 ProductAttributesDict = attributes
             };
                         

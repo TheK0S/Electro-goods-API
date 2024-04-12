@@ -18,6 +18,7 @@ namespace Electro_goods_API.Extensions
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
             services.AddTransient<IBasketRepository, BasketRepository>();
+            services.AddTransient<IFilterRepository, FilterRepository>();
             return services;
         }
     }
