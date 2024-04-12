@@ -1,5 +1,4 @@
 ﻿using Electro_goods_API.Models.Entities;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Electro_goods_API.Models

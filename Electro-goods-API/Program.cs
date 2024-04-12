@@ -9,51 +9,25 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
+using Electro_goods_API.Extensions;
 
 namespace Electro_goods_API
 {
-    public class Program
+    public class Program        
     {
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddAuthorization();
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-                .AddJwtBearer(o =>
-                {
-                    o.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                        ValidAudience = builder.Configuration["Jwt:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true
-                    };
-                });
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowLocalhost3000", builder =>
-                {
-                    builder.WithOrigins("http://localhost:3000")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
-            });
+            builder.Services.AddAuthenticationJwtBearer(builder);// Extensions/JwtBearerExtension.cs
+            builder.Services.AddCorsExtension(builder);// Extensions/CorsExtinsion.cs
             builder.Services.AddControllers();
             builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("HostingConnection")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddLogging();
             builder.Services.AddSingleton<IMapper, Mapper>();
             builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
-            builder.Services.AddRepository();
-
+            builder.Services.AddRepository();// Extensions/RepositoryServiceCollectionExtensions.cs
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -68,6 +42,9 @@ namespace Electro_goods_API
             //app.UseHttpsRedirection();
 
             app.UseCors("AllowLocalhost3000");
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
             app.MapGet("/security/getMessage", [Authorize] (HttpContext context) =>
             {
@@ -87,14 +64,6 @@ namespace Electro_goods_API
                     $"Expires: {expirationTime}\n" +
                     $"DateTime: {DateTime.Now} \n";
             });
-        
-                
-
-            
-            app.UseAuthentication();
-            app.UseAuthorization();
-            
-            app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
             app.MapControllers();
 
