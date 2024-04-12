@@ -38,7 +38,6 @@ namespace Electro_goods_API.Repositories
         public async Task DeleteProductAttribute(int id)
         {
             var productAttribute = await _context.ProductAttributs.FindAsync(id);
-
             if (productAttribute == null)
                 throw new NotFoundException($"OrderStatus with id={id} not found");
 

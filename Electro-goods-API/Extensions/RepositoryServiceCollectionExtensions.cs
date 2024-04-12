@@ -14,6 +14,7 @@ namespace Electro_goods_API.Extensions
             services.AddTransient<IOrderRepository, OrderRepository>();
             services.AddTransient<IOrderStatusRepository, OrderStatusRepository>();
             services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<IProductAttributeRepository, ProductAttributeRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
             services.AddTransient<IBasketRepository, BasketRepository>();
