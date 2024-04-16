@@ -25,7 +25,7 @@ namespace Electro_goods_API.Repositories
 
             var query = _context.Products.AsQueryable().Where(p => p.IsActive);
 
-            if(filter.MinPrice.HasValue)
+            if(filter.MinPrice.HasValue && filter.MinPrice > 0)
                 query = query.Where(p => p.Price >= filter.MinPrice);
 
             if(filter.MaxPrice.HasValue && filter.MaxPrice > filter.MinPrice)

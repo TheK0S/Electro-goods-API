@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Electro_goods_API.Extensions;
+using Electro_goods_API.ActionFilters;
 
 namespace Electro_goods_API
 {
@@ -18,7 +19,8 @@ namespace Electro_goods_API
             builder.Services.AddAuthorization();
             builder.Services.AddAuthenticationJwtBearer(builder);// Extensions/JwtBearerExtension.cs
             builder.Services.AddCorsExtension(builder);// Extensions/CorsExtinsion.cs
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(options =>{
+                options.Filters.Add(new ValidateModelAttribute());});
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddLogging();

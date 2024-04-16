@@ -22,6 +22,19 @@ namespace Electro_goods_API.Repositories
         }
 
 
+        public async Task<ProductAttribute> GetProductAttributeById(int id)
+        {
+            if (id <= 0)
+                throw new ArgumentOutOfRangeException("Wrong Id");
+
+            var productAttribute = await _context.ProductAttributs.FindAsync(id);
+            if (productAttribute == null)
+                throw new NotFoundException($"Role with id={id} not found");
+
+            return productAttribute;
+        }
+
+
         public async Task<ProductAttribute> CreateProductAttribute(ProductAttribute productAttribute)
         {
             _context.ProductAttributs.Add(productAttribute);

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
-using System.Text.Json;
 
 namespace Electro_goods_API.Middlewares
 {

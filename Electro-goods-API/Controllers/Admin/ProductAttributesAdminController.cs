@@ -16,10 +16,17 @@ namespace Electro_goods_API.Controllers.Admin
         }
 
         // GET: api/ProductAttributesAdmin/productId
-        [HttpGet("{productId}")]
+        [HttpGet("byProductId/{productId}")]
         public async Task<ActionResult<List<ProductAttribute>>> GetProductAttributesByProductId(int productId)
         {
             return Ok(await _context.GetProductAttributesByProductId(productId));
+        }
+
+        // GET: api/ProductAttributesAdmin/id
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ProductAttribute>> GetProductAttributeById(int id)
+        {
+            return Ok(await _context.GetProductAttributeById(id));
         }
 
         // PUT: api/ProductAttributesAdmin/5
@@ -40,7 +47,7 @@ namespace Electro_goods_API.Controllers.Admin
         {
             await _context.CreateProductAttribute(productAttribute);
 
-            return Created();
+            return CreatedAtAction("GetProductAttributeById", new { id = productAttribute.AttributeId }, productAttribute);
         }
 
         // DELETE: api/ProductAttributesAdmin/5

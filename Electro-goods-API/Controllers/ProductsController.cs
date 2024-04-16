@@ -4,6 +4,7 @@ using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Models.Filters;
 using Electro_goods_API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Drawing.Printing;
 
 namespace Electro_goods_API.Controllers
 {
@@ -28,8 +29,9 @@ namespace Electro_goods_API.Controllers
             [FromQuery] int minPrice,
             [FromQuery] int maxPrice,
             [FromQuery] int categoryId,
+            [FromQuery] int countryId,
             [FromQuery] int manufacturerId,
-            [FromQuery] string partOfName,
+            [FromQuery] string? partOfName,
             [FromQuery] Dictionary<string, string> attributes)
         {
             if (attributes.ContainsKey("page")) attributes.Remove("page");
@@ -45,6 +47,7 @@ namespace Electro_goods_API.Controllers
                 MinPrice = minPrice,
                 MaxPrice = maxPrice,
                 CategoryId = categoryId,
+                CountryId = countryId,
                 ManufacturerId = manufacturerId,
                 PartOfName = partOfName,
                 ProductAttributesDict = attributes
@@ -58,11 +61,11 @@ namespace Electro_goods_API.Controllers
         // GET: api/Products/count
         [HttpGet("count")]
         public async Task<ActionResult<List<ProductDTO>>> GetProductsCount(
-            [FromQuery] int minPrice,
-            [FromQuery] int maxPrice,
-            [FromQuery] int categoryId,
-            [FromQuery] int manufacturerId,
-            [FromQuery] string partOfName,
+            [FromQuery] int? minPrice,
+            [FromQuery] int? maxPrice,
+            [FromQuery] int? categoryId,
+            [FromQuery] int? manufacturerId,
+            [FromQuery] string? partOfName,
             [FromQuery] Dictionary<string, string> attributes)
         {
             if (attributes.ContainsKey("minPrice")) attributes.Remove("minPrice");
