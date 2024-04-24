@@ -34,7 +34,52 @@ namespace Electro_goods_API.Repositories
 
         public async Task<AttributeFilter> GetProductAttributeFilters(ProductFilter filter)
         {
-            return new AttributeFilter();
+            var query = _context.Products.AsQueryable().Where(p => p.IsActive);
+
+            if (filter is null)
+            {
+                var attributes = _context.ProductAttributs
+                     .GroupBy(pa => pa.AttributeName)
+                     .ToDictionary(
+                         group => group.Key,
+                         group => group.Select(pa => pa.AttributeValue).Distinct().ToList()
+                     );
+
+                return new AttributeFilter { AttributeFilters = attributes };
+            }
+            else
+                return new AttributeFilter();
+
+            //if (filter.MinPrice.HasValue)
+            //    query = query.Where(p => p.Price >= filter.MinPrice);
+
+            //if (filter.MaxPrice.HasValue && filter.MaxPrice > filter.MinPrice)
+            //    query = query.Where(p => p.Price <= filter.MaxPrice);
+
+            //if (filter.CategoryId.HasValue && filter.CategoryId > 0)
+            //    query = query.Where(p => p.CategoryId == filter.CategoryId);
+
+            //if (filter.CountryId.HasValue && filter.CountryId > 0)
+            //    query = query.Where(p => p.CountryId == filter.CountryId);
+
+            //if (filter.ManufacturerId.HasValue && filter.ManufacturerId > 0)
+            //    query = query.Where(p => p.ManufacturerId == filter.ManufacturerId);
+
+            //if (filter.ProductAttributesDict != null && filter.ProductAttributesDict.Any())
+            //    foreach (var attribute in filter.ProductAttributesDict)
+            //        query = query.Where(p => p.ProductAttributes.Any(pa =>
+            //            (pa.AttributeName == attribute.Key || pa.AttributeNameUK == attribute.Key) &&
+            //            (pa.AttributeValue == attribute.Value || pa.AttributeValueUK == attribute.Value)));
+
+            //var skipAmount = (page - 1) * pageSize;
+            //query = query.Skip(skipAmount).Take(pageSize);
+            //query = query
+            //    .Include(p => p.Category)
+            //    .Include(p => p.Country)
+            //    .Include(p => p.Manufacturer)
+            //    .Include(p => p.ProductAttributes);
+
+            //return await query.ToListAsync();
         }
     }
 }
