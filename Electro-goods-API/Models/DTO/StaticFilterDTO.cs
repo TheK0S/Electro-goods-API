@@ -1,9 +1,9 @@
 ﻿namespace Electro_goods_API.Models.DTO
 {
-    public class StaticFilterDTO
+    public class StaticFilterDTO<T>
     {
-        public List<CategoryDTO>? Category { get; set; }
-        public List<CountryDTO>? Country { get; set; }
-        public List<ManufacturerDTO>? Manufacturer { get; set; }
+        public string? Name {  get; set; }
+        public string? RequestName { get; set; }
+        public List<T>? Items { get; set; }
     }
 }

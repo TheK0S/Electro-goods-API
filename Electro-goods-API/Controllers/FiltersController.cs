@@ -2,8 +2,8 @@
 using Electro_goods_API.Models.DTO;
 using Electro_goods_API.Models.Filters;
 using Electro_goods_API.Repositories.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Any;
 
 namespace Electro_goods_API.Controllers
 {
@@ -21,7 +21,7 @@ namespace Electro_goods_API.Controllers
 
         // GET: api/Filters/Static
         [HttpGet("static")]
-        public async Task<ActionResult<StaticFilterDTO>> GetStaticFilters()
+        public async Task<ActionResult<List<dynamic>>> GetStaticFilters()
         {
             var staticFilter = await _context.GetStaticFilters();
 
@@ -29,14 +29,29 @@ namespace Electro_goods_API.Controllers
                 return NotFound();
 
             string language = _mapper.GetLanguageFromHeaders(Request.Headers);
-            var staticFilterDTO = new StaticFilterDTO
+            var staticFilters = new List<dynamic>
             {
-                Category = _mapper.MapCategoryToCategoryDTO(staticFilter.Categories, language),
-                Country = _mapper.MapCountryToCountryDTO(staticFilter.Countries, language),
-                Manufacturer = _mapper.MapManufacturerToManufacturerDTO(staticFilter.Manufacturers, language)
+                new StaticFilterDTO<CategoryDTO>
+                {
+                    Name = language == "ru"? "Категоря" : "Категорія",
+                    RequestName = "categoryIds",
+                    Items = _mapper.MapCategoryToCategoryDTO(staticFilter.Categories, language)
+                },
+                new StaticFilterDTO<CountryDTO>
+                {
+                    Name = language == "ru"? "Страна производителя" : "Країна виробника",
+                    RequestName = "countryIds",
+                    Items = _mapper.MapCountryToCountryDTO(staticFilter.Countries, language)
+                },
+                new StaticFilterDTO<ManufacturerDTO>
+                {
+                    Name = language == "ru"? "Производитель" : "Виробник",
+                    RequestName = "manufacturerIds",
+                    Items = _mapper.MapManufacturerToManufacturerDTO(staticFilter.Manufacturers, language)
+                }
             };
 
-            return staticFilterDTO;
+            return staticFilters;
         }
 
         // GET: api/Filters/Dynamic

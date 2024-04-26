@@ -6,9 +6,9 @@
         public int PageSize { get; set; }
         public int? MinPrice { get; set; }
         public int? MaxPrice { get; set; }
-        public List<int>? CategoryId { get; set; }
-        public List<int>? CountryId { get; set; }
-        public List<int>? ManufacturerId { get; set; }
+        public List<int>? CategoryIds { get; set; }
+        public List<int>? CountryIds { get; set; }
+        public List<int>? ManufacturerIds { get; set; }
         public string? PartOfName{ get; set; }
         public Dictionary<string,string>? ProductAttributesDict { get; set; }
     }

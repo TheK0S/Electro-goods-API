@@ -37,14 +37,14 @@ namespace Electro_goods_API.Repositories
             if(filter.MaxPrice.HasValue && filter.MaxPrice > filter.MinPrice)
                 query = query.Where(p => p.Price <= filter.MaxPrice);
 
-            if (filter.CategoryId?.Count > 0)
-                query = query.Where(p => filter.CategoryId.Contains(p.CategoryId));
+            if (filter.CategoryIds?.Count > 0)
+                query = query.Where(p => filter.CategoryIds.Contains(p.CategoryId));
 
-            if (filter.CountryId?.Count > 0)
-                query = query.Where(p => filter.CountryId.Contains(p.CountryId));
+            if (filter.CountryIds?.Count > 0)
+                query = query.Where(p => filter.CountryIds.Contains(p.CountryId));
 
-            if (filter.ManufacturerId?.Count > 0)
-                query = query.Where(p => filter.ManufacturerId.Contains(p.ManufacturerId));
+            if (filter.ManufacturerIds?.Count > 0)
+                query = query.Where(p => filter.ManufacturerIds.Contains(p.ManufacturerId));
 
             if (filter.ProductAttributesDict != null && filter.ProductAttributesDict.Any())
                 foreach (var attribute in filter.ProductAttributesDict)
@@ -81,14 +81,14 @@ namespace Electro_goods_API.Repositories
             if (filter.MaxPrice.HasValue && filter.MaxPrice > filter.MinPrice)
                 query = query.Where(p => p.Price <= filter.MaxPrice);
 
-            if (filter.CategoryId?.Count > 0)
-                query = query.Where(p => filter.CategoryId.Contains(p.CategoryId));
+            if (filter.CategoryIds?.Count > 0)
+                query = query.Where(p => filter.CategoryIds.Contains(p.CategoryId));
 
-            if (filter.CountryId?.Count > 0)
-                query = query.Where(p => filter.CountryId.Contains(p.CountryId));
+            if (filter.CountryIds?.Count > 0)
+                query = query.Where(p => filter.CountryIds.Contains(p.CountryId));
 
-            if (filter.ManufacturerId?.Count > 0)
-                query = query.Where(p => filter.ManufacturerId.Contains(p.ManufacturerId));
+            if (filter.ManufacturerIds?.Count > 0)
+                query = query.Where(p => filter.ManufacturerIds.Contains(p.ManufacturerId));
 
             if (filter.ProductAttributesDict != null && filter.ProductAttributesDict.Any())
                 foreach (var attribute in filter.ProductAttributesDict)
