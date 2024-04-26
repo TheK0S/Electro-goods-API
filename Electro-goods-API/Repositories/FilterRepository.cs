@@ -1,7 +1,6 @@
 ﻿using Electro_goods_API.Models;
 using Electro_goods_API.Models.Filters;
 using Electro_goods_API.Repositories.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Electro_goods_API.Repositories
 {

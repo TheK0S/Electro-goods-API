@@ -23,66 +23,17 @@ namespace Electro_goods_API.Controllers
 
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<List<ProductDTO>>> GetProducts(
-            [FromQuery] int page,
-            [FromQuery] int pageSize,
-            [FromQuery] int minPrice,
-            [FromQuery] int maxPrice,
-            [FromQuery] int categoryId,
-            [FromQuery] int countryId,
-            [FromQuery] int manufacturerId,
-            [FromQuery] string? partOfName,
-            [FromQuery] Dictionary<string, string> attributes)
+        public async Task<ActionResult<List<ProductDTO>>> GetProducts([FromQuery] ProductFilter filter)
         {
-            if (attributes.ContainsKey("page")) attributes.Remove("page");
-            if (attributes.ContainsKey("pageSize")) attributes.Remove("pageSize");
-            if (attributes.ContainsKey("minPrice")) attributes.Remove("minPrice");
-            if (attributes.ContainsKey("maxPrice")) attributes.Remove("maxPrice");
-            if (attributes.ContainsKey("categoryId")) attributes.Remove("categoryId");
-            if (attributes.ContainsKey("partOfName")) attributes.Remove("partOfName");
-            if (attributes.ContainsKey("manufacturerId")) attributes.Remove("manufacturerId");
-
-            ProductFilter filter = new ProductFilter
-            {               
-                MinPrice = minPrice,
-                MaxPrice = maxPrice,
-                CategoryId = categoryId,
-                CountryId = countryId,
-                ManufacturerId = manufacturerId,
-                PartOfName = partOfName,
-                ProductAttributesDict = attributes
-            };
-
-            var products = await _service.GetProducts(page, pageSize, filter);
+            var products = await _service.GetProducts(filter);
             var productsDto = _mapper.MapProductToProductDTO(products, _mapper.GetLanguageFromHeaders(Request.Headers));
             return Ok(productsDto);
         }
 
         // GET: api/Products/count
         [HttpGet("count")]
-        public async Task<ActionResult<List<ProductDTO>>> GetProductsCount(
-            [FromQuery] int? minPrice,
-            [FromQuery] int? maxPrice,
-            [FromQuery] int? categoryId,
-            [FromQuery] int? manufacturerId,
-            [FromQuery] string? partOfName,
-            [FromQuery] Dictionary<string, string> attributes)
+        public async Task<ActionResult<List<ProductDTO>>> GetProductsCount([FromQuery] ProductFilter filter)
         {
-            if (attributes.ContainsKey("minPrice")) attributes.Remove("minPrice");
-            if (attributes.ContainsKey("maxPrice")) attributes.Remove("maxPrice");
-            if (attributes.ContainsKey("categoryId")) attributes.Remove("categoryId");
-            if (attributes.ContainsKey("manufacturerId")) attributes.Remove("manufacturerId");
-
-            ProductFilter filter = new ProductFilter
-            {
-                MinPrice = minPrice,
-                MaxPrice = maxPrice,
-                CategoryId = categoryId,
-                ManufacturerId = manufacturerId,
-                PartOfName = partOfName,
-                ProductAttributesDict = attributes
-            };
-                        
             return Ok(await _service.GetProductsCount(filter));
         }
 

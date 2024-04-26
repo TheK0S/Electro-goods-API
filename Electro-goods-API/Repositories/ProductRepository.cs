@@ -15,13 +15,13 @@ namespace Electro_goods_API.Repositories
             _context = context;
         }
 
-        public async Task<List<Product>> GetProducts(int page, int pageSize, ProductFilter filter)
+        public async Task<List<Product>> GetProducts(ProductFilter filter)
         {
             if(filter == null)
                 return await GetAllProducts();
 
-            if (page < 1) page = 1;
-            if (pageSize < 1) pageSize = 10;
+            if (filter.Page < 1) filter.Page = 1;
+            if (filter.PageSize < 1) filter.PageSize = 10;
 
             var query = _context.Products.AsQueryable().Where(p => p.IsActive);
 
@@ -31,14 +31,14 @@ namespace Electro_goods_API.Repositories
             if(filter.MaxPrice.HasValue && filter.MaxPrice > filter.MinPrice)
                 query = query.Where(p => p.Price <= filter.MaxPrice);
 
-            if (filter.CategoryId.HasValue && filter.CategoryId > 0)
-                query = query.Where(p => p.CategoryId == filter.CategoryId);
+            if (filter.CategoryId?.Count > 0)
+                query = query.Where(p => filter.CategoryId.Contains(p.CategoryId));
 
-            if (filter.CountryId.HasValue && filter.CountryId > 0)
-                query = query.Where(p => p.CountryId == filter.CountryId);
+            if (filter.CountryId?.Count > 0)
+                query = query.Where(p => filter.CountryId.Contains(p.CountryId));
 
-            if (filter.ManufacturerId.HasValue && filter.ManufacturerId > 0)
-                query = query.Where(p => p.ManufacturerId == filter.ManufacturerId);
+            if (filter.ManufacturerId?.Count > 0)
+                query = query.Where(p => filter.ManufacturerId.Contains(p.ManufacturerId));
 
             if (filter.ProductAttributesDict != null && filter.ProductAttributesDict.Any())
                 foreach (var attribute in filter.ProductAttributesDict)
@@ -46,8 +46,8 @@ namespace Electro_goods_API.Repositories
                         (pa.AttributeName == attribute.Key || pa.AttributeNameUK == attribute.Key) && 
                         (pa.AttributeValue == attribute.Value || pa.AttributeValueUK == attribute.Value)));
 
-            var skipAmount = (page - 1) * pageSize;
-            query = query.Skip(skipAmount).Take(pageSize);
+            var skipAmount = (filter.Page - 1) * filter.PageSize;
+            query = query.Skip(skipAmount).Take(filter.PageSize);
             query = query
                 .Include(p => p.Category)
                 .Include(p => p.Country)
@@ -64,20 +64,20 @@ namespace Electro_goods_API.Repositories
 
             var query = _context.Products.AsQueryable().Where(p => p.IsActive);
 
-            if (filter.MinPrice.HasValue)
+            if (filter.MinPrice.HasValue && filter.MinPrice > 0)
                 query = query.Where(p => p.Price >= filter.MinPrice);
 
             if (filter.MaxPrice.HasValue && filter.MaxPrice > filter.MinPrice)
                 query = query.Where(p => p.Price <= filter.MaxPrice);
 
-            if (filter.CategoryId.HasValue && filter.CategoryId > 0)
-                query = query.Where(p => p.CategoryId == filter.CategoryId);
+            if (filter.CategoryId?.Count > 0)
+                query = query.Where(p => filter.CategoryId.Contains(p.CategoryId));
 
-            if (filter.CountryId.HasValue && filter.CountryId > 0)
-                query = query.Where(p => p.CountryId == filter.CountryId);
+            if (filter.CountryId?.Count > 0)
+                query = query.Where(p => filter.CountryId.Contains(p.CountryId));
 
-            if (filter.ManufacturerId.HasValue && filter.ManufacturerId > 0)
-                query = query.Where(p => p.ManufacturerId == filter.ManufacturerId);
+            if (filter.ManufacturerId?.Count > 0)
+                query = query.Where(p => filter.ManufacturerId.Contains(p.ManufacturerId));
 
             if (filter.ProductAttributesDict != null && filter.ProductAttributesDict.Any())
                 foreach (var attribute in filter.ProductAttributesDict)

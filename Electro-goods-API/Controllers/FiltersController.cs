@@ -31,9 +31,9 @@ namespace Electro_goods_API.Controllers
             string language = _mapper.GetLanguageFromHeaders(Request.Headers);
             var staticFilterDTO = new StaticFilterDTO
             {
-                Categories = _mapper.MapCategoryToCategoryDTO(staticFilter.Categories, language),
-                Countries = _mapper.MapCountryToCountryDTO(staticFilter.Countries, language),
-                Manufacturers = _mapper.MapManufacturerToManufacturerDTO(staticFilter.Manufacturers, language)
+                Category = _mapper.MapCategoryToCategoryDTO(staticFilter.Categories, language),
+                Country = _mapper.MapCountryToCountryDTO(staticFilter.Countries, language),
+                Manufacturer = _mapper.MapManufacturerToManufacturerDTO(staticFilter.Manufacturers, language)
             };
 
             return staticFilterDTO;
@@ -41,32 +41,8 @@ namespace Electro_goods_API.Controllers
 
         // GET: api/Filters/Dynamic
         [HttpGet("dynamic")]
-        public async Task<ActionResult<AttributeFilter>> GetDynamicFilters(
-            [FromQuery] int minPrice,
-            [FromQuery] int maxPrice,
-            [FromQuery] int categoryId,
-            [FromQuery] int manufacturerId,
-            [FromQuery] string partOfName,
-            [FromQuery] Dictionary<string, string> attributes)
+        public async Task<ActionResult<AttributeFilter>> GetDynamicFilters([FromQuery] ProductFilter filter)
         {
-            if (attributes.ContainsKey("page")) attributes.Remove("page");
-            if (attributes.ContainsKey("pageSize")) attributes.Remove("pageSize");
-            if (attributes.ContainsKey("minPrice")) attributes.Remove("minPrice");
-            if (attributes.ContainsKey("maxPrice")) attributes.Remove("maxPrice");
-            if (attributes.ContainsKey("categoryId")) attributes.Remove("categoryId");
-            if (attributes.ContainsKey("partOfName")) attributes.Remove("partOfName");
-            if (attributes.ContainsKey("manufacturerId")) attributes.Remove("manufacturerId");
-
-            ProductFilter filter = new ProductFilter
-            {
-                MinPrice = minPrice,
-                MaxPrice = maxPrice,
-                CategoryId = categoryId,
-                ManufacturerId = manufacturerId,
-                PartOfName = partOfName,
-                ProductAttributesDict = attributes
-            };
-            
             return await _context.GetProductAttributeFilters(filter);
         }
     }

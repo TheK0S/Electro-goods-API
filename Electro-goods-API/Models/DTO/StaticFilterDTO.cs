@@ -2,8 +2,8 @@
 {
     public class StaticFilterDTO
     {
-        public List<CategoryDTO> Categories { get; set; }
-        public List<CountryDTO> Countries { get; set; }
-        public List<ManufacturerDTO> Manufacturers { get; set; }
+        public List<CategoryDTO>? Category { get; set; }
+        public List<CountryDTO>? Country { get; set; }
+        public List<ManufacturerDTO>? Manufacturer { get; set; }
     }
 }
