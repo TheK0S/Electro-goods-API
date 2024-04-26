@@ -4,6 +4,7 @@ using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Models.Filters;
 using Electro_goods_API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Electro_goods_API.Repositories
 {
@@ -24,6 +25,11 @@ namespace Electro_goods_API.Repositories
             if (filter.PageSize < 1) filter.PageSize = 10;
 
             var query = _context.Products.AsQueryable().Where(p => p.IsActive);
+
+            if (!filter.PartOfName.IsNullOrEmpty())
+                query = query.Where(p => 
+                    p.Name.ToUpper().Contains(filter.PartOfName.ToUpper())
+                    || p.NameUK.ToUpper().Contains(filter.PartOfName.ToUpper()));
 
             if(filter.MinPrice.HasValue && filter.MinPrice > 0)
                 query = query.Where(p => p.Price >= filter.MinPrice);
@@ -63,6 +69,11 @@ namespace Electro_goods_API.Repositories
                 return await GetAllProductsCount();
 
             var query = _context.Products.AsQueryable().Where(p => p.IsActive);
+
+            if (!filter.PartOfName.IsNullOrEmpty())
+                query = query.Where(p =>
+                    p.Name.ToUpper().Contains(filter.PartOfName.ToUpper())
+                    || p.NameUK.ToUpper().Contains(filter.PartOfName.ToUpper()));
 
             if (filter.MinPrice.HasValue && filter.MinPrice > 0)
                 query = query.Where(p => p.Price >= filter.MinPrice);
