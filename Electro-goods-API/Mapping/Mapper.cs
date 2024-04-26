@@ -20,6 +20,8 @@ namespace Electro_goods_API.Mapping
                 Name = language == "ru" ? product.Name : product.NameUK,
                 Description = language == "ru" ? product.Description : product.DescriptionUK,
                 Price = product.Price,
+                Discount = product.Discount,
+                ImgPath = product.ImgPath,
                 Category = MapCategoryToCategoryDTO(product.Category, language),
                 Country = MapCountryToCountryDTO(product.Country, language),
                 Manufacturer = MapManufacturerToManufacturerDTO(product.Manufacturer, language),
