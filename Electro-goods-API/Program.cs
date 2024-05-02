@@ -22,7 +22,7 @@ namespace Electro_goods_API
             builder.Services.AddControllers(options =>{
                 options.Filters.Add(new ValidateModelAttribute());});
             builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("Local_1")));
             builder.Services.AddLogging();
             builder.Services.AddSingleton<IMapper, Mapper>();
             builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();

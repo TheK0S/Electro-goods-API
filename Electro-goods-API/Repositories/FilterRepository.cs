@@ -33,21 +33,33 @@ namespace Electro_goods_API.Repositories
 
         public async Task<AttributeFilter> GetProductAttributeFilters(ProductFilter filter)
         {
-            var query = _context.Products.AsQueryable().Where(p => p.IsActive);
+            var query = _context.Products
+                .AsQueryable()
+                .Where(p => p.IsActive)
+                .SelectMany(p => p.ProductAttributes)
+                .GroupBy(pa => pa.AttributeName)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(pa => pa.AttributeValue).ToList()
+                );
 
-            if (filter is null)
-            {
-                var attributes = _context.ProductAttributs
-                     .GroupBy(pa => pa.AttributeName)
-                     .ToDictionary(
-                         group => group.Key,
-                         group => group.Select(pa => pa.AttributeValue).Distinct().ToList()
-                     );
+            return new AttributeFilter { AttributeFilters = query };
 
-                return new AttributeFilter { AttributeFilters = attributes };
-            }
-            else
-                return new AttributeFilter();
+            //if (filter is null)
+            //{
+            //    var attributes = _context.ProductAttributs
+            //         .GroupBy(pa => pa.AttributeName)
+            //         .ToDictionary(
+            //             group => group.Key,
+            //             group => group.Select(pa => pa.AttributeValue).Distinct().ToList()
+            //         );
+
+            //    return new AttributeFilter { AttributeFilters = attributes };
+            //}
+            //else
+            //    return new AttributeFilter();
+
+
 
             //if (filter.MinPrice.HasValue)
             //    query = query.Where(p => p.Price >= filter.MinPrice);
