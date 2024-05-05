@@ -1,4 +1,5 @@
-﻿using Electro_goods_API.Mapping.Interfaces;
+﻿using Electro_goods_API.Mapping;
+using Electro_goods_API.Mapping.Interfaces;
 using Electro_goods_API.Models.DTO;
 using Electro_goods_API.Models.Filters;
 using Electro_goods_API.Repositories.Interfaces;
@@ -56,9 +57,20 @@ namespace Electro_goods_API.Controllers
 
         // GET: api/Filters/Dynamic
         [HttpGet("dynamic")]
-        public ActionResult<AttributeFilter> GetDynamicFilters([FromQuery] ProductFilter filter)
+        public ActionResult<DynamicFilterDTO> GetDynamicFilters([FromQuery] ProductFilter filter)
         {
-            return _context.GetProductAttributeFilters(filter);
+            string language = _mapper.GetLanguageFromHeaders(Request.Headers);
+            var attributes = _context.GetProductAttributeFilters(filter, language);
+
+            if (attributes is null) return NotFound();
+
+            DynamicFilterDTO dynamicFilter = new()
+            {
+                RequestName = "productAttrIds",
+                Items = attributes
+            };
+
+            return dynamicFilter;
         }
     }
 }
