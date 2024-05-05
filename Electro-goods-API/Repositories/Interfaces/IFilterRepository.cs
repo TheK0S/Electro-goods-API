@@ -7,6 +7,6 @@ namespace Electro_goods_API.Repositories.Interfaces
     public interface IFilterRepository
     {
         Task<StaticFilter> GetStaticFilters();
-        Task<AttributeFilter> GetProductAttributeFilters(ProductFilter filter);
+        AttributeFilter GetProductAttributeFilters(ProductFilter filter);
     }
 }

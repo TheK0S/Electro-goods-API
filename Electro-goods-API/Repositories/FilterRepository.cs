@@ -31,23 +31,18 @@ namespace Electro_goods_API.Repositories
             };
         }
 
-        public async Task<AttributeFilter> GetProductAttributeFilters(ProductFilter filter)
+        public AttributeFilter GetProductAttributeFilters(ProductFilter filter)
         {
             var query = _context.Products.AsQueryable().Where(p => p.IsActive);
 
-            if (filter is null)
-            {
-                var attributes = _context.ProductAttributs
-                     .GroupBy(pa => pa.AttributeName)
+            var attributes = _context.ProductAttributs
+                     .GroupBy(pa => pa.AttributeName ?? "no name")
                      .ToDictionary(
                          group => group.Key,
                          group => group.Select(pa => pa.AttributeValue).Distinct().ToList()
                      );
 
-                return new AttributeFilter { AttributeFilters = attributes };
-            }
-            else
-                return new AttributeFilter();
+            return new AttributeFilter { AttributeFilters = attributes };
 
             //if (filter.MinPrice.HasValue)
             //    query = query.Where(p => p.Price >= filter.MinPrice);

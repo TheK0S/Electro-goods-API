@@ -10,6 +10,6 @@
         public List<int>? CountryIds { get; set; }
         public List<int>? ManufacturerIds { get; set; }
         public string? PartOfName{ get; set; }
-        public Dictionary<string,string>? ProductAttributesDict { get; set; }
+        public List<int>? ProductAttrIds { get; set; }
     }
 }

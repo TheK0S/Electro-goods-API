@@ -56,9 +56,9 @@ namespace Electro_goods_API.Controllers
 
         // GET: api/Filters/Dynamic
         [HttpGet("dynamic")]
-        public async Task<ActionResult<AttributeFilter>> GetDynamicFilters([FromQuery] ProductFilter filter)
+        public ActionResult<AttributeFilter> GetDynamicFilters([FromQuery] ProductFilter filter)
         {
-            return await _context.GetProductAttributeFilters(filter);
+            return _context.GetProductAttributeFilters(filter);
         }
     }
 }
