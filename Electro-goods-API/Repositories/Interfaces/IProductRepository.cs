@@ -14,5 +14,6 @@ namespace Electro_goods_API.Repositories.Interfaces
         Task<Product> CreateProduct(Product product);
         Task UpdateProduct(int id, Product product);
         Task DeleteProduct(int id);
+        IQueryable<Product> GetProductQueryByFilter(ProductFilter filter);
     }
 }

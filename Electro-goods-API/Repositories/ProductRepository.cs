@@ -21,39 +21,8 @@ namespace Electro_goods_API.Repositories
             if(filter == null)
                 return await GetAllProducts();
 
-            if (filter.Page < 1) filter.Page = 1;
-            if (filter.PageSize < 1) filter.PageSize = 10;
+            var query = GetProductQueryByFilter(filter);        
 
-            var query = _context.Products.AsQueryable().Where(p => p.IsActive);
-
-            if (!filter.PartOfName.IsNullOrEmpty())
-                query = query.Where(p => 
-                    p.Name.ToUpper().Contains(filter.PartOfName.ToUpper())
-                    || p.NameUK.ToUpper().Contains(filter.PartOfName.ToUpper()));
-
-            if(filter.MinPrice.HasValue && filter.MinPrice > 0)
-                query = query.Where(p => p.Price >= filter.MinPrice);
-
-            if(filter.MaxPrice.HasValue && filter.MaxPrice > filter.MinPrice)
-                query = query.Where(p => p.Price <= filter.MaxPrice);
-
-            if (filter.CategoryIds?.Count > 0)
-                query = query.Where(p => filter.CategoryIds.Contains(p.CategoryId));
-
-            if (filter.CountryIds?.Count > 0)
-                query = query.Where(p => filter.CountryIds.Contains(p.CountryId));
-
-            if (filter.ManufacturerIds?.Count > 0)
-                query = query.Where(p => filter.ManufacturerIds.Contains(p.ManufacturerId));
-
-            if (filter.ProductAttributesDict != null && filter.ProductAttributesDict.Any())
-                foreach (var attribute in filter.ProductAttributesDict)
-                    query = query.Where(p => p.ProductAttributes.Any(pa => 
-                        (pa.AttributeName == attribute.Key || pa.AttributeNameUK == attribute.Key) && 
-                        (pa.AttributeValue == attribute.Value || pa.AttributeValueUK == attribute.Value)));
-
-            var skipAmount = (filter.Page - 1) * filter.PageSize;
-            query = query.Skip(skipAmount).Take(filter.PageSize);
             query = query
                 .Include(p => p.Category)
                 .Include(p => p.Country)
@@ -68,33 +37,7 @@ namespace Electro_goods_API.Repositories
             if (filter == null)
                 return await GetAllProductsCount();
 
-            var query = _context.Products.AsQueryable().Where(p => p.IsActive);
-
-            if (!filter.PartOfName.IsNullOrEmpty())
-                query = query.Where(p =>
-                    p.Name.ToUpper().Contains(filter.PartOfName.ToUpper())
-                    || p.NameUK.ToUpper().Contains(filter.PartOfName.ToUpper()));
-
-            if (filter.MinPrice.HasValue && filter.MinPrice > 0)
-                query = query.Where(p => p.Price >= filter.MinPrice);
-
-            if (filter.MaxPrice.HasValue && filter.MaxPrice > filter.MinPrice)
-                query = query.Where(p => p.Price <= filter.MaxPrice);
-
-            if (filter.CategoryIds?.Count > 0)
-                query = query.Where(p => filter.CategoryIds.Contains(p.CategoryId));
-
-            if (filter.CountryIds?.Count > 0)
-                query = query.Where(p => filter.CountryIds.Contains(p.CountryId));
-
-            if (filter.ManufacturerIds?.Count > 0)
-                query = query.Where(p => filter.ManufacturerIds.Contains(p.ManufacturerId));
-
-            if (filter.ProductAttributesDict != null && filter.ProductAttributesDict.Any())
-                foreach (var attribute in filter.ProductAttributesDict)
-                    query = query.Where(p => p.ProductAttributes.Any(pa =>
-                        (pa.AttributeName == attribute.Key || pa.AttributeNameUK == attribute.Key) &&
-                        (pa.AttributeValue == attribute.Value || pa.AttributeValueUK == attribute.Value)));
+            var query = GetProductQueryByFilter(filter);
 
             return await query.CountAsync();
         }
@@ -243,6 +186,53 @@ namespace Electro_goods_API.Repositories
 
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
+        }
+
+        public IQueryable<Product> GetProductQueryByFilter(ProductFilter filter)
+        {
+            var query = _context.Products.AsQueryable().Where(p => p.IsActive);
+
+            if (!filter.PartOfName.IsNullOrEmpty())
+                query = query.Where(p =>
+                    p.Name.ToUpper().Contains(filter.PartOfName.ToUpper())
+                    || p.NameUK.ToUpper().Contains(filter.PartOfName.ToUpper()));
+
+            if (filter.MinPrice.HasValue && filter.MinPrice > 0)
+                query = query.Where(p => p.Price >= filter.MinPrice);
+
+            if (filter.MaxPrice.HasValue && filter.MaxPrice > filter.MinPrice)
+                query = query.Where(p => p.Price <= filter.MaxPrice);
+
+            if (filter.CategoryIds?.Count > 0)
+                query = query.Where(p => filter.CategoryIds.Contains(p.CategoryId));
+
+            if (filter.CountryIds?.Count > 0)
+                query = query.Where(p => filter.CountryIds.Contains(p.CountryId));
+
+            if (filter.ManufacturerIds?.Count > 0)
+                query = query.Where(p => filter.ManufacturerIds.Contains(p.ManufacturerId));
+
+            if (filter.ProductAttrIds?.Count > 0)
+            {
+                //take productAttribute name and value by id
+                var productAttributeList = _context.ProductAttributs
+                    .Where(pa => filter.ProductAttrIds.Contains(pa.AttributeId))
+                    .ToList();
+
+                query = query.Where(p =>
+                    p.ProductAttributes.Any(pa =>
+                        productAttributeList.Contains(pa)
+                    )
+                );
+            }
+
+            if (filter.Page > 0 && filter.PageSize > 0)
+            {
+                var skipAmount = (filter.Page - 1) * filter.PageSize;
+                query = query.Skip(skipAmount).Take(filter.PageSize);
+            }
+
+            return query;
         }
     }
 }

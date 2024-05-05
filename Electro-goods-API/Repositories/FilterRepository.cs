@@ -1,6 +1,9 @@
-﻿using Electro_goods_API.Models;
+﻿using Electro_goods_API.Comparers;
+using Electro_goods_API.Models;
+using Electro_goods_API.Models.DTO;
 using Electro_goods_API.Models.Filters;
 using Electro_goods_API.Repositories.Interfaces;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Electro_goods_API.Repositories
 {
@@ -10,12 +13,14 @@ namespace Electro_goods_API.Repositories
         private readonly ICategoryRepository _categoryRepository;
         private readonly ICountryRepositiry _countryRepositiry;
         private readonly IManufacturerRepository _manufacturerRepository;
-        public FilterRepository(AppDbContext context, ICategoryRepository categoryRepository, ICountryRepositiry countryRepositiry, IManufacturerRepository manufacturerRepository)
+        private readonly IProductRepository _productRepository;
+        public FilterRepository(AppDbContext context, ICategoryRepository categoryRepository, ICountryRepositiry countryRepositiry, IManufacturerRepository manufacturerRepository, IProductRepository productRepository)
         {
             _context = context;
             _categoryRepository = categoryRepository;
             _countryRepositiry = countryRepositiry;
             _manufacturerRepository = manufacturerRepository;
+            _productRepository = productRepository;
         }
         public async Task<StaticFilter> GetStaticFilters()
         {
@@ -31,54 +36,29 @@ namespace Electro_goods_API.Repositories
             };
         }
 
-        public async Task<AttributeFilter> GetProductAttributeFilters(ProductFilter filter)
+        public Dictionary<string, List<ProductAttributeFilterItemDTO>> GetProductAttributeFilters(ProductFilter filter, string language)
         {
-            var query = _context.Products.AsQueryable().Where(p => p.IsActive);
+            language = language.IsNullOrEmpty() ? "ru" : language;
 
-            if (filter is null)
-            {
-                var attributes = _context.ProductAttributs
-                     .GroupBy(pa => pa.AttributeName)
-                     .ToDictionary(
-                         group => group.Key,
-                         group => group.Select(pa => pa.AttributeValue).Distinct().ToList()
-                     );
+            filter.Page = 0;
+            filter.PageSize = 0;
 
-                return new AttributeFilter { AttributeFilters = attributes };
-            }
-            else
-                return new AttributeFilter();
+            var attributesRu = _productRepository.GetProductQueryByFilter(filter)
+                .SelectMany(p => p.ProductAttributes)
+                .GroupBy(pa => language == "ru" ? pa.AttributeName ?? "no name" : pa.AttributeNameUK ?? "no name")
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(pa => new ProductAttributeFilterItemDTO
+                    {
+                        Id = pa.AttributeId,
+                        Value = language == "ru" ? pa.AttributeValue : pa.AttributeValueUK
+                    }
+                    )
+                    .Distinct(new ProductAttributeFilterItemDTOComparer())
+                    .ToList()
+                    );
 
-            //if (filter.MinPrice.HasValue)
-            //    query = query.Where(p => p.Price >= filter.MinPrice);
-
-            //if (filter.MaxPrice.HasValue && filter.MaxPrice > filter.MinPrice)
-            //    query = query.Where(p => p.Price <= filter.MaxPrice);
-
-            //if (filter.CategoryId.HasValue && filter.CategoryId > 0)
-            //    query = query.Where(p => p.CategoryId == filter.CategoryId);
-
-            //if (filter.CountryId.HasValue && filter.CountryId > 0)
-            //    query = query.Where(p => p.CountryId == filter.CountryId);
-
-            //if (filter.ManufacturerId.HasValue && filter.ManufacturerId > 0)
-            //    query = query.Where(p => p.ManufacturerId == filter.ManufacturerId);
-
-            //if (filter.ProductAttributesDict != null && filter.ProductAttributesDict.Any())
-            //    foreach (var attribute in filter.ProductAttributesDict)
-            //        query = query.Where(p => p.ProductAttributes.Any(pa =>
-            //            (pa.AttributeName == attribute.Key || pa.AttributeNameUK == attribute.Key) &&
-            //            (pa.AttributeValue == attribute.Value || pa.AttributeValueUK == attribute.Value)));
-
-            //var skipAmount = (page - 1) * pageSize;
-            //query = query.Skip(skipAmount).Take(pageSize);
-            //query = query
-            //    .Include(p => p.Category)
-            //    .Include(p => p.Country)
-            //    .Include(p => p.Manufacturer)
-            //    .Include(p => p.ProductAttributes);
-
-            //return await query.ToListAsync();
+            return attributesRu;
         }
     }
 }
