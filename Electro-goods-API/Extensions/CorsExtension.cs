@@ -12,6 +12,18 @@
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });
+                options.AddPolicy("AllowFrontHttps", builder =>
+                {
+                    builder.WithOrigins("https://r.example111.s-host.net")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+                options.AddPolicy("AllowFrontHttp", builder =>
+                {
+                    builder.WithOrigins("http://r.example111.s-host.net")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
             });
             return services;
         }

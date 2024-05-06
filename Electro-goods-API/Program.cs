@@ -39,7 +39,10 @@ namespace Electro_goods_API
             }
 
             //app.UseHttpsRedirection();
-            app.UseCors("AllowLocalhost3000");
+            app.UseCors(policy =>
+            {
+                policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000", "https://r.example111.s-host.net", "http://r.example111.s-host.net");
+            });
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
