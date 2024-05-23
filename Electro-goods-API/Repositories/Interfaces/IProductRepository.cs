@@ -7,6 +7,7 @@ namespace Electro_goods_API.Repositories.Interfaces
     {
         Task<List<Product>> GetAllProducts();
         Task<List<Product>> GetProducts(ProductFilter filter);
+        Task<List<Product>> GetProductsByProductIds(List<int> productIds);
         Task<int> GetAllProductsCount();        
         Task<int> GetProductsCount(ProductFilter filter);
         Task<List<Product>> GetDiscountedProducts(int page, int pageSize);

@@ -30,6 +30,15 @@ namespace Electro_goods_API.Controllers
             return Ok(productsDto);
         }
 
+        // GET: api/Products/byProductIds
+        [HttpGet("byProductIds")]
+        public async Task<ActionResult<List<ProductDTO>>> GetProductsByIds([FromQuery] List<int> productIds)
+        {
+            var products = await _service.GetProductsByProductIds(productIds);
+            var productsDto = _mapper.MapProductToProductDTO(products, _mapper.GetLanguageFromHeaders(Request.Headers));
+            return Ok(productsDto);
+        }
+
         // GET: api/Products/count
         [HttpGet("count")]
         public async Task<ActionResult<List<ProductDTO>>> GetProductsCount([FromQuery] ProductFilter filter)
