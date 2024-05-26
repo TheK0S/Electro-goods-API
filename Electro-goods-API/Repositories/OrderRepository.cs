@@ -71,7 +71,7 @@ namespace Electro_goods_API.Repositories
                 foreach (var product in productList)
                 {
                     int quantity = (int)productQuantities[product.ProductId];
-                    
+                    decimal itemTotalPrice = product.ProductPrice * quantity;
                     orderItems.Add(new OrderItem
                     {
                         ProductId = product.ProductId,
@@ -80,6 +80,7 @@ namespace Electro_goods_API.Repositories
                         ProductPrice = product.ProductPrice,
                         Quantity = quantity
                     });
+                    totalPrice += itemTotalPrice;
                 }
 
                 Order order = new Order
@@ -88,7 +89,7 @@ namespace Electro_goods_API.Repositories
                     UserId = orderRequest.UserId,
                     UserName = orderRequest.UserName,
                     OrderDate = DateTime.Now,
-                    Price = 0,
+                    Price = totalPrice,
                     ShippingCity = orderRequest.ShippingCity,
                     ShippingAddress = orderRequest.ShippingAddress,
                     OrderStatusId = 1,
