@@ -7,8 +7,8 @@ namespace Electro_goods_API.Mapping.Interfaces
     {
         public ProductDTO MapProductToProductDTO(Product product, string language);
         public List<ProductDTO> MapProductToProductDTO(List<Product> products, string language);
-        public OrderDTO MapOrderToOrderDTO(Order order, string language);
-        public List<OrderDTO> MapOrderToOrderDTO(List<Order> orders, string language);
+        public OrderDTORequest MapOrderToOrderDTO(Order order, string language);
+        public List<OrderDTORequest> MapOrderToOrderDTO(List<Order> orders, string language);
         public OrderItemDTO MapOrderItemToOrderItemDTO(OrderItem orderItem, string language);
         public List<OrderItemDTO> MapOrderItemToOrderItemDTO(List<OrderItem> orderItems, string language);
         public CategoryDTO MapCategoryToCategoryDTO(Category category, string language);

@@ -43,14 +43,14 @@ namespace Electro_goods_API.Mapping
             return productsDTO;
         }
 
-        public OrderDTO MapOrderToOrderDTO(Order order, string language)
+        public OrderDTORequest MapOrderToOrderDTO(Order order, string language)
         {
             if (string.IsNullOrWhiteSpace(language))
                 language = "ru";
             if (order is null)
-                return new OrderDTO();
+                return new OrderDTORequest();
 
-            return new OrderDTO
+            return new OrderDTORequest
             {
                 Id = order.Id,
                 OrderDate = order.OrderDate,
@@ -62,14 +62,14 @@ namespace Electro_goods_API.Mapping
             };
         }
 
-        public List<OrderDTO> MapOrderToOrderDTO(List<Order> orders, string language)
+        public List<OrderDTORequest> MapOrderToOrderDTO(List<Order> orders, string language)
         {
             if (string.IsNullOrWhiteSpace(language))
                 language = "ru";
             if (orders is null || orders.Count == 0)
-                return new List<OrderDTO>();
+                return new List<OrderDTORequest>();
 
-            var ordersDTO = new List<OrderDTO>();
+            var ordersDTO = new List<OrderDTORequest>();
             foreach (var order in orders)
                 ordersDTO.Add(MapOrderToOrderDTO(order, language));
 
