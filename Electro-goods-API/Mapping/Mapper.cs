@@ -7,7 +7,7 @@ namespace Electro_goods_API.Mapping
 {
     public class Mapper : IMapper
     {
-        public ProductDTO MapProductToProductDTO(Product product, string language)
+        public ProductDTO MapProductToProductDTO(Product? product, string? language)
         {
             if (string.IsNullOrWhiteSpace(language))
                 language = "ru";
@@ -29,7 +29,7 @@ namespace Electro_goods_API.Mapping
             };
         }
 
-        public List<ProductDTO> MapProductToProductDTO(List<Product> products, string language)
+        public List<ProductDTO> MapProductToProductDTO(List<Product>? products, string? language)
         {
             if (string.IsNullOrWhiteSpace(language))
                 language = "ru";
@@ -43,47 +43,47 @@ namespace Electro_goods_API.Mapping
             return productsDTO;
         }
 
-        public OrderDTORequest MapOrderToOrderDTO(Order order, string language)
+        public OrderResponseDTO MapOrderToOrderResponseDTO(Order? order, string? language)
         {
             if (string.IsNullOrWhiteSpace(language))
                 language = "ru";
             if (order is null)
-                return new OrderDTORequest();
+                return new OrderResponseDTO();
 
-            return new OrderDTORequest
+            return new OrderResponseDTO
             {
                 Id = order.Id,
                 OrderDate = order.OrderDate,
                 Price = order.Price,
                 ShippingAddress = order.ShippingAddress,
-                User = order.User,
+                User = MapUserToUserDTO(order.User, language),
                 OrderStatus = language == "ru" ? order?.OrderStatus?.StatusName : order?.OrderStatus?.StatusNameUK,
-                OrderItems = MapOrderItemToOrderItemDTO(order.OrderItems, language),
+                OrderItems = MapOrderItemToOrderItemResponseDTO(order?.OrderItems, language),
             };
         }
 
-        public List<OrderDTORequest> MapOrderToOrderDTO(List<Order> orders, string language)
+        public List<OrderResponseDTO> MapOrderToOrderResponseDTO(List<Order>? orders, string? language)
         {
             if (string.IsNullOrWhiteSpace(language))
                 language = "ru";
             if (orders is null || orders.Count == 0)
-                return new List<OrderDTORequest>();
+                return new List<OrderResponseDTO>();
 
-            var ordersDTO = new List<OrderDTORequest>();
+            var ordersDTO = new List<OrderResponseDTO>();
             foreach (var order in orders)
-                ordersDTO.Add(MapOrderToOrderDTO(order, language));
+                ordersDTO.Add(MapOrderToOrderResponseDTO(order, language));
 
             return ordersDTO;
         }
 
-        public OrderItemDTO MapOrderItemToOrderItemDTO(OrderItem orderItem, string language)
+        public OrderItemResponseDTO MapOrderItemToOrderItemResponseDTO(OrderItem? orderItem, string? language)
         {
             if (string.IsNullOrWhiteSpace(language))
                 language = "ru";
             if (orderItem is null)
-                return new OrderItemDTO();
+                return new OrderItemResponseDTO();
 
-            return new OrderItemDTO
+            return new OrderItemResponseDTO
             {
                 Id = orderItem.Id,
                 ProductName = language == "ru" ? orderItem.ProductName : orderItem.ProductNameUK,
@@ -93,21 +93,21 @@ namespace Electro_goods_API.Mapping
             };
         }
 
-        public List<OrderItemDTO> MapOrderItemToOrderItemDTO(List<OrderItem> orderItems, string language)
+        public List<OrderItemResponseDTO> MapOrderItemToOrderItemResponseDTO(List<OrderItem>? orderItems, string? language)
         {
             if (string.IsNullOrWhiteSpace(language))
                 language = "ru";
             if (orderItems is null || orderItems.Count == 0)
-                return new List<OrderItemDTO>();
+                return new List<OrderItemResponseDTO>();
 
-            var orderItemsDTO = new List<OrderItemDTO>();
+            var orderItemsDTO = new List<OrderItemResponseDTO>();
             foreach (var orderItem in orderItems)
-                orderItemsDTO.Add(MapOrderItemToOrderItemDTO(orderItem, language));
+                orderItemsDTO.Add(MapOrderItemToOrderItemResponseDTO(orderItem, language));
 
             return orderItemsDTO;
         }
 
-        public CategoryDTO MapCategoryToCategoryDTO(Category category, string language)
+        public CategoryDTO MapCategoryToCategoryDTO(Category? category, string? language)
         {
             if (string.IsNullOrWhiteSpace(language))
                 language = "ru";
@@ -120,7 +120,7 @@ namespace Electro_goods_API.Mapping
             };
         }
 
-        public List<CategoryDTO> MapCategoryToCategoryDTO(List<Category> categories, string language)
+        public List<CategoryDTO> MapCategoryToCategoryDTO(List<Category>? categories, string? language)
         {
             if (string.IsNullOrWhiteSpace(language)) 
                 language = "ru";
@@ -134,7 +134,7 @@ namespace Electro_goods_API.Mapping
             return categoriesDTO;
         }
 
-        public CountryDTO MapCountryToCountryDTO(Country country, string language)
+        public CountryDTO MapCountryToCountryDTO(Country? country, string? language)
         {
             if (string.IsNullOrWhiteSpace(language))
                 language = "ru";
@@ -148,7 +148,7 @@ namespace Electro_goods_API.Mapping
             };
         }
 
-        public List<CountryDTO> MapCountryToCountryDTO(List<Country> countries, string language)
+        public List<CountryDTO> MapCountryToCountryDTO(List<Country>? countries, string? language)
         {
             if (string.IsNullOrWhiteSpace(language))
                 language = "ru";
@@ -162,7 +162,7 @@ namespace Electro_goods_API.Mapping
             return countriesDTO;
         }
 
-        public ManufacturerDTO MapManufacturerToManufacturerDTO(Manufacturer manufacturer, string language)
+        public ManufacturerDTO MapManufacturerToManufacturerDTO(Manufacturer? manufacturer, string? language)
         {
             if (string.IsNullOrWhiteSpace(language))
                 language = "ru";
@@ -176,7 +176,7 @@ namespace Electro_goods_API.Mapping
             };
         }
 
-        public List<ManufacturerDTO> MapManufacturerToManufacturerDTO(List<Manufacturer> manufacturers, string language)
+        public List<ManufacturerDTO> MapManufacturerToManufacturerDTO(List<Manufacturer>? manufacturers, string? language)
         {
             if (string.IsNullOrWhiteSpace(language))
                 language = "ru";
@@ -190,7 +190,7 @@ namespace Electro_goods_API.Mapping
             return manufacturersDTO;
         }
 
-        public ProductAttributeDTO MapProductAttributeToProductAttributeDTO(ProductAttribute attribute, string language)
+        public ProductAttributeDTO MapProductAttributeToProductAttributeDTO(ProductAttribute? attribute, string? language)
         {
             if (string.IsNullOrWhiteSpace(language))
                 language = "ru";
@@ -205,7 +205,7 @@ namespace Electro_goods_API.Mapping
             };
         }
 
-        public List<ProductAttributeDTO> MapProductAttributeToProductAttributeDTO(List<ProductAttribute> attributes, string language)
+        public List<ProductAttributeDTO> MapProductAttributeToProductAttributeDTO(List<ProductAttribute>? attributes, string? language)
         {
             if (string.IsNullOrWhiteSpace(language))
                 language = "ru";
@@ -219,6 +219,28 @@ namespace Electro_goods_API.Mapping
             return attributesDTO;
         }
 
+        public UserDTO MapUserToUserDTO(User? user, string? language)
+        {
+            if (string.IsNullOrWhiteSpace(language))
+                language = "ru";
+            if (user is null)
+                return new UserDTO();
+
+            return new UserDTO
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Patronomic = user.Patronomic,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Birthdate = user.Birthdate,
+                CreationDate = user.CreationDate,
+                IsActive = user.IsActive,
+                Orders = MapOrderToOrderResponseDTO(user.Orders, language),
+            };
+        }
+
         public string GetLanguageFromHeaders(IHeaderDictionary headers)
         {
             if (headers is null)
@@ -226,10 +248,7 @@ namespace Electro_goods_API.Mapping
 
             headers.TryGetValue("Api-Language", out var lang);
 
-            if(string.IsNullOrWhiteSpace(lang))
-                return "ru";
-
-            return lang;
+            return lang.ToString() ?? "ru";
         }
     }
 }

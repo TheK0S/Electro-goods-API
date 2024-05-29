@@ -38,7 +38,14 @@ namespace Electro_goods_API.Repositories
             return await _context.Orders.Where(o => o.UserId == id).ToListAsync();
         }
 
-        public async Task<Order> CreateOrder(OrderDTORequest orderRequest)
+        public async Task<Order> CreateOrder(Order order)
+        {
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
+            return order;
+        }
+
+        public async Task<Order> CreateOrder(OrderRequestDTO orderRequest)
         {
             if(orderRequest is null || orderRequest.OrderItems is  null)
                 throw new ArgumentNullException(nameof(orderRequest));
@@ -48,7 +55,7 @@ namespace Electro_goods_API.Repositories
             {
                 List<int> productIds = new List<int>();
                 Dictionary<int,decimal> productQuantities = new Dictionary<int,decimal>();
-                foreach (OrderItemDTO orderItem in orderRequest.OrderItems)
+                foreach (OrderItemRequestDTO orderItem in orderRequest.OrderItems)
                 {
                     productIds.Add(orderItem.ProductId);
                     productQuantities[orderItem.ProductId] = orderItem.Quantity;

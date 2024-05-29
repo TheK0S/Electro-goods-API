@@ -9,7 +9,8 @@ namespace Electro_goods_API.Repositories.Interfaces
         Task<List<Order>> GetOrders(OrderFilter filter);
         Task<Order> GetOrderById(int id);
         Task<List<Order>> GetOrdersByUserId(int id);
-        Task<Order> CreateOrder(OrderDTORequest orderRequest);
+        Task<Order> CreateOrder(Order order);
+        Task<Order> CreateOrder(OrderRequestDTO orderRequest);
         Task UpdateOrder(int id, Order order);
         Task DeleteOrder(int id);
     }

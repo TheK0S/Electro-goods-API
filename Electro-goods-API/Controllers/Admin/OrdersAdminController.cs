@@ -1,4 +1,5 @@
 ﻿using Electro_goods_API.Models.Entities;
+using Electro_goods_API.Models.Filters;
 using Electro_goods_API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,9 +19,9 @@ namespace Electro_goods_API.Controllers.Admin
 
         // GET: api/OrdersAdmin
         [HttpGet]
-        public async Task<ActionResult<List<Order>>> GetAllOrders()
+        public async Task<ActionResult<List<Order>>> GetOrders(OrderFilter filter)
         {
-            return Ok(await _context.GetAllOrders());
+            return Ok(await _context.GetOrders(filter));
         }
 
         // GET: api/OrdersAdmin/5

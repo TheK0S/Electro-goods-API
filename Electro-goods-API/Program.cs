@@ -58,7 +58,7 @@ namespace Electro_goods_API
 
 
                 // Извлекаем информацию о сроке жизни токена
-                var expirationTime = jsonToken.ValidTo;
+                var expirationTime = jsonToken?.ValidTo;
                 return $"Role: {context.User.FindFirstValue(ClaimTypes.Role)}\n" +
                     $"Id: {context.User.FindFirstValue(ClaimTypes.NameIdentifier)}\n" +
                     $"Email: {context.User.FindFirstValue(ClaimTypes.Email)}\n" +

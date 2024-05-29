@@ -4,18 +4,22 @@ namespace Electro_goods_API.Comparers
 {
     public class ProductAttributeFilterItemDTOComparer : IEqualityComparer<ProductAttributeFilterItemDTO>
     {
-        public bool Equals(ProductAttributeFilterItemDTO x, ProductAttributeFilterItemDTO y)
+        public bool Equals(ProductAttributeFilterItemDTO? x, ProductAttributeFilterItemDTO? y)
         {
-            if (ReferenceEquals(x, y))
-                return true;
             if (x is null || y is null)
                 return false;
+            if (ReferenceEquals(x, y))  
+                return true;
+            
             return x.Value == y.Value;
         }
 
-        public int GetHashCode(ProductAttributeFilterItemDTO obj)
+        public int GetHashCode(ProductAttributeFilterItemDTO? obj)
         {
-            return obj.Value.GetHashCode();
+            if(obj is null)
+                throw new ArgumentNullException(nameof(obj));
+
+            return obj.Value?.GetHashCode() ?? 0;
         }
     }
 

@@ -14,7 +14,6 @@ namespace Electro_goods_API.Models.DTO
         public DateTime Birthdate { get; set; }
         public DateTime CreationDate { get; set; }
         public bool IsActive { get; set; }
-        public Basket? Basket { get; set; }
-        public List<Order>? Orders { get; set; }
+        public List<OrderResponseDTO>? Orders { get; set; }
     }
 }

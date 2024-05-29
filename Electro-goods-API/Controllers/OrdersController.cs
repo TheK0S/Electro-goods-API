@@ -22,16 +22,17 @@ namespace Electro_goods_API.Controllers
 
         // GET: api/Orders
         [HttpGet]
-        public async Task<ActionResult<List<OrderDTORequest>>> GetOrdersByUserId(int id)
+        public async Task<ActionResult<List<OrderRequestDTO>>> GetOrdersByUserId(int id)
         {
             var orders = await _service.GetOrdersByUserId(id);
-            var ordersDto = _mapper.MapOrderToOrderDTO(orders, _mapper.GetLanguageFromHeaders(Request.Headers));
+            string language = _mapper.GetLanguageFromHeaders(Request.Headers);
+            var ordersDto = _mapper.MapOrderToOrderResponseDTO(orders, language);
             return Ok(ordersDto);
         }
 
         // POST: api/Orders
         [HttpPost]
-        public async Task<ActionResult> PostOrder(OrderDTORequest orderRequest)
+        public async Task<ActionResult> PostOrder(OrderRequestDTO orderRequest)
         {
             await _service.CreateOrder(orderRequest);
 
