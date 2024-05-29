@@ -13,7 +13,7 @@ namespace Electro_goods_API.Models.Entities
         public string? Description { get; set; }
         public string? DescriptionUK { get; set; }
         public string? ImgPath { get; set; }
-        [Column(TypeName = "money")]
+        [Column(TypeName = "decimal(18,4)")]
         public decimal Price { get; set; } = 0;
         public int StockQuantity { get; set; }
         public int Discount { get; set; }

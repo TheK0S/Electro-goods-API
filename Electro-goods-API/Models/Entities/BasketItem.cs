@@ -9,7 +9,7 @@ namespace Electro_goods_API.Models.Entities
         public int ProductId { get; set; }
         public string? ProductName { get; set; }
         public string? ProductNameUK { get; set; }
-        [Column(TypeName = "money")]
+        [Column(TypeName = "decimal(18,4)")]
         public decimal ProductPrice { get; set; }
         public int Quantity { get; set; }
         public Basket? Basket { get; set; }

@@ -8,7 +8,7 @@ namespace Electro_goods_API.Models.Entities
         public int UserId { get; set; }
         public string? UserName { get; set; }
         public DateTime OrderDate { get; set; }
-        [Column(TypeName = "money")]
+        [Column(TypeName = "decimal(18,4)")]
         public decimal Price { get; set; }
         public string? ShippingCity { get; set; }
         public string? ShippingAddress { get; set; }

@@ -18,7 +18,9 @@ namespace Electro_goods_API.Repositories
 
         public async Task<List<Order>> GetOrders(OrderFilter filter)
         {
-            return await _context.Orders.ToListAsync();
+            return await _context.Orders
+                .Include(o => o.OrderItems)
+                .ToListAsync();
         }
 
         public async Task<Order> GetOrderById(int id)
@@ -26,7 +28,10 @@ namespace Electro_goods_API.Repositories
             if (id <= 0)
                 throw new ArgumentOutOfRangeException("Wrong Id");
 
-            var order = await _context.Orders.FindAsync(id);
+            var order = await _context.Orders
+                .Include(o => o.OrderItems)
+                .FirstOrDefaultAsync(o => o.Id == id);
+
             if (order == null)
                 throw new NotFoundException($"Order with id={id} not found");
 
@@ -35,7 +40,10 @@ namespace Electro_goods_API.Repositories
 
         public async Task<List<Order>> GetOrdersByUserId(int id)
         {
-            return await _context.Orders.Where(o => o.UserId == id).ToListAsync();
+            return await _context.Orders
+                .Where(o => o.UserId == id)
+                .Include(o => o.OrderItems)
+                .ToListAsync();
         }
 
         public async Task<Order> CreateOrder(Order order)
