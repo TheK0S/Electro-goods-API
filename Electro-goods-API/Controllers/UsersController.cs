@@ -14,11 +14,13 @@ namespace Electro_goods_API.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IBasketRepository _basketRepository;
         private readonly IMapper _mapper;
+        private readonly string language;
         public UsersController(IUserRepository userRepository, IBasketRepository basketRepository, IMapper mapper)
         {
             _userRepository = userRepository;
             _basketRepository = basketRepository;
             _mapper = mapper;
+            language = HttpContext.Items["Language"]?.ToString() ?? "ru";
         }
 
         //POST: api/Users/Register
@@ -27,7 +29,6 @@ namespace Electro_goods_API.Controllers
         {
             if (!ModelState.IsValid)
             {
-                string language = _mapper.GetLanguageFromHeaders(Request.Headers);
                 string errorMessage = language == "ru" ?
                     "Возникла ошибка при регистрации по причине некоректных данных пользователя. Заполните необходимые поля формы регистрации и повторите попытку."
                     : "Виникла помилка під час реєстрації через неправильні дані користувача. Заповніть поля форми реєстрації та повторіть спробу.";
@@ -49,7 +50,6 @@ namespace Electro_goods_API.Controllers
         [HttpPost("ChangePassword")]
         public async Task<IActionResult> ChangePassword(ChangePasswordDTO changePassword)
         {
-            string language = _mapper.GetLanguageFromHeaders(Request.Headers);
             if (!ModelState.IsValid)
             {
                 string validationErrorMessage = language == "ru" ?

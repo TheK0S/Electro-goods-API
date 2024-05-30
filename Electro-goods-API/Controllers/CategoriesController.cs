@@ -24,7 +24,7 @@ namespace Electro_goods_API.Controllers
         public async Task<ActionResult<List<CategoryDTO>>> GetCategories()
         {
             var categories = await _service.GetAllCategories();
-            var categoriesDto = _mapper.MapCategoryToCategoryDTO(categories, _mapper.GetLanguageFromHeaders(Request.Headers));
+            var categoriesDto = _mapper.MapCategoryToCategoryDTO(categories);
             return Ok(categoriesDto);
         }
 
@@ -33,7 +33,7 @@ namespace Electro_goods_API.Controllers
         public async Task<ActionResult<CategoryDTO>> GetCategoryById(int id)
         {
             var category = await _service.GetCategoryById(id);
-            var categoryDto = _mapper.MapCategoryToCategoryDTO(category, _mapper.GetLanguageFromHeaders(Request.Headers));
+            var categoryDto = _mapper.MapCategoryToCategoryDTO(category);
             return Ok(categoryDto);
         }
     }

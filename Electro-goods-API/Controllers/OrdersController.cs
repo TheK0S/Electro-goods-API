@@ -1,8 +1,6 @@
 ﻿using Electro_goods_API.Mapping.Interfaces;
 using Electro_goods_API.Models.DTO;
-using Electro_goods_API.Models.Entities;
 using Electro_goods_API.Repositories.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Electro_goods_API.Controllers
@@ -25,8 +23,7 @@ namespace Electro_goods_API.Controllers
         public async Task<ActionResult<List<OrderRequestDTO>>> GetOrdersByUserId(int id)
         {
             var orders = await _service.GetOrdersByUserId(id);
-            string language = _mapper.GetLanguageFromHeaders(Request.Headers);
-            var ordersDto = _mapper.MapOrderToOrderResponseDTO(orders, language);
+            var ordersDto = _mapper.MapOrderToOrderResponseDTO(orders);
             return Ok(ordersDto);
         }
 

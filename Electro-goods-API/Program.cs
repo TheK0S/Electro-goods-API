@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Electro_goods_API.Extensions;
 using Electro_goods_API.ActionFilters;
+using FluentAssertions.Common;
 
 namespace Electro_goods_API
 {
@@ -24,7 +25,8 @@ namespace Electro_goods_API
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddLogging();
-            builder.Services.AddSingleton<IMapper, Mapper>();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddTransient<IMapper, Mapper>();
             builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
             builder.Services.AddRepository();// Extensions/RepositoryServiceCollectionExtensions.cs
             builder.Services.AddEndpointsApiExplorer();
@@ -45,6 +47,7 @@ namespace Electro_goods_API
             });
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseMiddleware<LanguageMiddleware>();
             app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
             app.MapGet("/security/getMessage", [Authorize] (HttpContext context) =>

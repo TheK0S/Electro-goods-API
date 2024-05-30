@@ -26,7 +26,7 @@ namespace Electro_goods_API.Controllers
         public async Task<ActionResult<List<ProductDTO>>> GetProducts([FromQuery] ProductFilter filter)
         {
             var products = await _service.GetProducts(filter);
-            var productsDto = _mapper.MapProductToProductDTO(products, _mapper.GetLanguageFromHeaders(Request.Headers));
+            var productsDto = _mapper.MapProductToProductDTO(products);
             return Ok(productsDto);
         }
 
@@ -35,7 +35,7 @@ namespace Electro_goods_API.Controllers
         public async Task<ActionResult<List<ProductDTO>>> GetProductsByIds([FromQuery] List<int> productIds)
         {
             var products = await _service.GetProductsByProductIds(productIds);
-            var productsDto = _mapper.MapProductToProductDTO(products, _mapper.GetLanguageFromHeaders(Request.Headers));
+            var productsDto = _mapper.MapProductToProductDTO(products);
             return Ok(productsDto);
         }
 
@@ -51,7 +51,7 @@ namespace Electro_goods_API.Controllers
         public async Task<ActionResult<List<ProductDTO>>> GetDiscountedProducts(int page, int pageSize)
         {
             var products = await _service.GetDiscountedProducts(page, pageSize);
-            var productDTO = _mapper.MapProductToProductDTO(products, _mapper.GetLanguageFromHeaders(Request.Headers));
+            var productDTO = _mapper.MapProductToProductDTO(products);
 
             return Ok(productDTO);
         }
@@ -61,7 +61,7 @@ namespace Electro_goods_API.Controllers
         public async Task<ActionResult<ProductDTO>> GetProductById(int id)
         {
             Product product = await _service.GetProductById(id);
-            ProductDTO productDTO = _mapper.MapProductToProductDTO(product, _mapper.GetLanguageFromHeaders(Request.Headers));
+            ProductDTO productDTO = _mapper.MapProductToProductDTO(product);
             return Ok(productDTO);
         }
 

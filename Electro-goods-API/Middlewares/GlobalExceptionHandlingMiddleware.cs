@@ -15,9 +15,7 @@ namespace Electro_goods_API.Middlewares
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            context.Request.Headers.TryGetValue("Api-Language", out var lang);
-            if (string.IsNullOrEmpty(lang))
-                lang = "ru";
+            string lang = context.Items["Language"]?.ToString() ?? "ru";
 
             try
             {

@@ -14,10 +14,12 @@ namespace Electro_goods_API.Controllers
     {
         private readonly IFilterRepository _context;
         private readonly IMapper _mapper;
+        private readonly string language;
         public FiltersController(IFilterRepository context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
+            language = HttpContext?.Items["Language"]?.ToString() ?? "ru";
         }
 
         // GET: api/Filters/Static
@@ -29,26 +31,25 @@ namespace Electro_goods_API.Controllers
             if (staticFilter == null)
                 return NotFound();
 
-            string language = _mapper.GetLanguageFromHeaders(Request.Headers);
             var staticFilters = new List<dynamic>
             {
                 new StaticFilterDTO<CategoryDTO>
                 {
                     Name = language == "ru"? "Категоря" : "Категорія",
                     RequestName = "categoryIds",
-                    Items = _mapper.MapCategoryToCategoryDTO(staticFilter.Categories, language)
+                    Items = _mapper.MapCategoryToCategoryDTO(staticFilter.Categories)
                 },
                 new StaticFilterDTO<CountryDTO>
                 {
                     Name = language == "ru"? "Страна производителя" : "Країна виробника",
                     RequestName = "countryIds",
-                    Items = _mapper.MapCountryToCountryDTO(staticFilter.Countries, language)
+                    Items = _mapper.MapCountryToCountryDTO(staticFilter.Countries)
                 },
                 new StaticFilterDTO<ManufacturerDTO>
                 {
                     Name = language == "ru"? "Производитель" : "Виробник",
                     RequestName = "manufacturerIds",
-                    Items = _mapper.MapManufacturerToManufacturerDTO(staticFilter.Manufacturers, language)
+                    Items = _mapper.MapManufacturerToManufacturerDTO(staticFilter.Manufacturers)
                 }
             };
 
@@ -59,8 +60,7 @@ namespace Electro_goods_API.Controllers
         [HttpGet("dynamic")]
         public ActionResult<DynamicFilterDTO> GetDynamicFilters([FromQuery] ProductFilter filter)
         {
-            string language = _mapper.GetLanguageFromHeaders(Request.Headers);
-            var attributes = _context.GetProductAttributeFilters(filter, language);
+            var attributes = _context.GetProductAttributeFilters(filter);
 
             if (attributes is null) return NotFound();
 

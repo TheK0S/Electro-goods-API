@@ -7,6 +7,6 @@ namespace Electro_goods_API.Repositories.Interfaces
     public interface IFilterRepository
     {
         Task<StaticFilter> GetStaticFilters();
-        Dictionary<string, List<ProductAttributeFilterItemDTO>> GetProductAttributeFilters(ProductFilter filter, string language);
+        Dictionary<string, List<ProductAttributeFilterItemDTO>> GetProductAttributeFilters(ProductFilter filter);
     }
 }

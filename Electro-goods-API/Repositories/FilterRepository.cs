@@ -9,18 +9,19 @@ namespace Electro_goods_API.Repositories
 {
     public class FilterRepository : IFilterRepository
     {
-        private readonly AppDbContext _context;
         private readonly ICategoryRepository _categoryRepository;
         private readonly ICountryRepositiry _countryRepositiry;
         private readonly IManufacturerRepository _manufacturerRepository;
         private readonly IProductRepository _productRepository;
-        public FilterRepository(AppDbContext context, ICategoryRepository categoryRepository, ICountryRepositiry countryRepositiry, IManufacturerRepository manufacturerRepository, IProductRepository productRepository)
+        private readonly string language;
+        public FilterRepository(IHttpContextAccessor httpContextAccessor, ICategoryRepository categoryRepository, ICountryRepositiry countryRepositiry, IManufacturerRepository manufacturerRepository, IProductRepository productRepository)
         {
-            _context = context;
             _categoryRepository = categoryRepository;
             _countryRepositiry = countryRepositiry;
             _manufacturerRepository = manufacturerRepository;
             _productRepository = productRepository;
+
+            language = httpContextAccessor.HttpContext?.Items["Language"]?.ToString() ?? "ru";
         }
         public async Task<StaticFilter> GetStaticFilters()
         {
@@ -36,10 +37,8 @@ namespace Electro_goods_API.Repositories
             };
         }
 
-        public Dictionary<string, List<ProductAttributeFilterItemDTO>> GetProductAttributeFilters(ProductFilter filter, string language)
+        public Dictionary<string, List<ProductAttributeFilterItemDTO>> GetProductAttributeFilters(ProductFilter filter)
         {
-            language = language.IsNullOrEmpty() ? "ru" : language;
-
             filter.Page = 0;
             filter.PageSize = 0;
 
