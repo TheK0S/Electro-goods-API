@@ -97,7 +97,7 @@ namespace Electro_goods_API.Middlewares
                         problem.Status = (int)HttpStatusCode.InternalServerError;
                         problem.Type = lang == "ru" ? "Ошибка сервера" : "Помилка сервера";
                         problem.Title = lang == "ru" ? "Внутренняя ошибка сервера при обработке запроса" : "Внутрішня помилка сервера під час обробки запиту";
-                        problem.Detail = "Unhandled server error";
+                        problem.Detail = ex.Message;
                         
                         _logger.LogCritical(ex, ex.Message);
                         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;

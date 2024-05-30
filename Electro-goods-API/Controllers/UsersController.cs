@@ -13,13 +13,11 @@ namespace Electro_goods_API.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IBasketRepository _basketRepository;
-        private readonly IMapper _mapper;
         private readonly string language;
         public UsersController(IUserRepository userRepository, IBasketRepository basketRepository, IMapper mapper)
         {
             _userRepository = userRepository;
             _basketRepository = basketRepository;
-            _mapper = mapper;
             language = HttpContext.Items["Language"]?.ToString() ?? "ru";
         }
 
