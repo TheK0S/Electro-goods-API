@@ -12,6 +12,7 @@ namespace Electro_goods_API.Models.Entities
         public decimal Price { get; set; }
         public string? ShippingCity { get; set; }
         public string? ShippingAddress { get; set; }
+        public string? PaymentMethod { get; set; }
         public int OrderStatusId { get; set; }
         public User? User { get; set; }
         public OrderStatus? OrderStatus { get; set; }

@@ -56,6 +56,7 @@ namespace Electro_goods_API.Mapping
                 OrderDate = order.OrderDate,
                 Price = order.Price,
                 ShippingAddress = order.ShippingAddress,
+                PaymentMethod = order.PaymentMethod,
                 User = MapUserToUserDTO(order.User),
                 OrderStatus = language == "ru" ? order?.OrderStatus?.StatusName : order?.OrderStatus?.StatusNameUK,
                 OrderItems = MapOrderItemToOrderItemResponseDTO(order?.OrderItems),

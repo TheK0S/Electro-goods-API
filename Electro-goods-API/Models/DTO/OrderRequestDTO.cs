@@ -10,6 +10,7 @@ namespace Electro_goods_API.Models.DTO
         public decimal Price { get; set; }
         public string? ShippingCity { get; set; }
         public string? ShippingAddress { get; set; }
+        public string? PaymentMethod { get; set; }
         public List<OrderItemRequestDTO>? OrderItems { get; set; }
     }
 }
