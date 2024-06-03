@@ -20,6 +20,31 @@ namespace Electro_goods_API.Repositories
         {
             return await _context.Orders
                 .Include(o => o.OrderItems)
+                .Select(o => new Order
+                {
+                    Id = o.Id,
+                    UserId = o.UserId,
+                    UserName = o.UserName,
+                    OrderDate = o.OrderDate,
+                    Price = o.Price,
+                    ShippingCity = o.ShippingCity,
+                    ShippingAddress = o.ShippingAddress,
+                    PaymentMethod = o.PaymentMethod,
+                    OrderStatusId = o.OrderStatusId,
+                    User = new User
+                    {
+                        Id = o.User.Id,
+                        FirstName = o.User.FirstName,
+                        LastName = o.User.LastName,
+                        Patronomic = o.User.Patronomic
+                    },
+                    OrderStatus = new OrderStatus
+                    {
+                        Id = o.OrderStatus.Id,
+                        StatusName = o.OrderStatus.StatusName,
+                    },
+                    OrderItems = o.OrderItems.ToList()
+                })
                 .ToListAsync();
         }
 
@@ -30,6 +55,31 @@ namespace Electro_goods_API.Repositories
 
             var order = await _context.Orders
                 .Include(o => o.OrderItems)
+                .Select(o => new Order
+                {
+                    Id = o.Id,
+                    UserId = o.UserId,
+                    UserName = o.UserName,
+                    OrderDate = o.OrderDate,
+                    Price = o.Price,
+                    ShippingCity = o.ShippingCity,
+                    ShippingAddress = o.ShippingAddress,
+                    PaymentMethod = o.PaymentMethod,
+                    OrderStatusId = o.OrderStatusId,
+                    User = new User
+                    {
+                        Id = o.User.Id,
+                        FirstName = o.User.FirstName,
+                        LastName = o.User.LastName,
+                        Patronomic = o.User.Patronomic
+                    },
+                    OrderStatus = new OrderStatus
+                    {
+                        Id = o.OrderStatus.Id,
+                        StatusName = o.OrderStatus.StatusName,
+                    },
+                    OrderItems = o.OrderItems.ToList()
+                })
                 .FirstOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
@@ -43,6 +93,31 @@ namespace Electro_goods_API.Repositories
             return await _context.Orders
                 .Where(o => o.UserId == id)
                 .Include(o => o.OrderItems)
+                .Select(o => new Order
+                {
+                    Id = o.Id,
+                    UserId = o.UserId,
+                    UserName = o.UserName,
+                    OrderDate = o.OrderDate,
+                    Price = o.Price,
+                    ShippingCity = o.ShippingCity,
+                    ShippingAddress = o.ShippingAddress,
+                    PaymentMethod = o.PaymentMethod,
+                    OrderStatusId = o.OrderStatusId,
+                    User = new User
+                    {
+                        Id = o.User.Id,
+                        FirstName = o.User.FirstName,
+                        LastName = o.User.LastName,
+                        Patronomic = o.User.Patronomic
+                    },
+                    OrderStatus = new OrderStatus
+                    {
+                        Id = o.OrderStatus.Id,
+                        StatusName = o.OrderStatus.StatusName,
+                    },
+                    OrderItems = o.OrderItems.ToList()
+                })
                 .ToListAsync();
         }
 

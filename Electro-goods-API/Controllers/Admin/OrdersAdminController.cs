@@ -19,9 +19,9 @@ namespace Electro_goods_API.Controllers.Admin
 
         // GET: api/OrdersAdmin
         [HttpGet]
-        public async Task<ActionResult<List<Order>>> GetOrders(OrderFilter filter)
+        public async Task<ActionResult<List<Order>>> GetOrders()
         {
-            return Ok(await _context.GetOrders(filter));
+            return Ok(await _context.GetOrders(new OrderFilter()));
         }
 
         // GET: api/OrdersAdmin/5
