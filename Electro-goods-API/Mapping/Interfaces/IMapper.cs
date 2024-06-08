@@ -19,5 +19,6 @@ namespace Electro_goods_API.Mapping.Interfaces
         public List<ManufacturerDTO> MapManufacturerToManufacturerDTO(List<Manufacturer> manufacturers);
         public ProductAttributeDTO MapProductAttributeToProductAttributeDTO(ProductAttribute attribute);
         public List<ProductAttributeDTO> MapProductAttributeToProductAttributeDTO(List<ProductAttribute> attributes);
+        public UserDTO MapUserToUserDTO(User? user);
     }
 }

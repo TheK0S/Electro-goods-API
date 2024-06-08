@@ -18,7 +18,8 @@ namespace Electro_goods_API.Repositories
         {
             var issuer = _configuration["Jwt:Issuer"];
             var audience = _configuration["Jwt:Audience"];
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
+            var secredKey = _configuration["Jwt:Key"];
+            var key = Encoding.ASCII.GetBytes(secredKey);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
@@ -35,8 +36,8 @@ namespace Electro_goods_API.Repositories
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var jwtToken = tokenHandler.WriteToken(token);
-            Console.WriteLine($"expires: {tokenDescriptor.Expires}");
-            Console.WriteLine($"now: {DateTime.Now}");
+            //Console.WriteLine($"expires: {tokenDescriptor.Expires}");
+            //Console.WriteLine($"now: {DateTime.Now}");
 
             return jwtToken;
         }

@@ -1,4 +1,5 @@
-﻿using Electro_goods_API.Helpers;
+﻿using Electro_goods_API.Exceptions;
+using Electro_goods_API.Helpers;
 using Electro_goods_API.Mapping.Interfaces;
 using Electro_goods_API.Models.DTO;
 using Electro_goods_API.Models.Entities;
@@ -13,12 +14,27 @@ namespace Electro_goods_API.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IBasketRepository _basketRepository;
+        private readonly IMapper _mapper;
         private readonly string language;
         public UsersController(IUserRepository userRepository, IBasketRepository basketRepository, IMapper mapper)
         {
             _userRepository = userRepository;
             _basketRepository = basketRepository;
-            language = HttpContext.Items["Language"]?.ToString() ?? "ru";
+            _mapper = mapper;
+            language = HttpContext?.Items["Language"]?.ToString() ?? "ru";
+        }
+
+        //GET: api/Users/id
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserDTO>> GetUser(int id)
+        {
+            User user = await _userRepository.GetUserById(id);
+            if (user == null)
+                throw new UserNotFoundException();
+
+            UserDTO userDTO = _mapper.MapUserToUserDTO(user);
+
+            return Ok(userDTO);
         }
 
         //POST: api/Users/Register

@@ -37,9 +37,9 @@ namespace Electro_goods_API.Tests.Controller
             var categories = A.Fake<List<Category>>();
             var categoryDtos = A.Fake<List<CategoryDTO>>();
 
-            A.CallTo(() => _mapper.GetLanguageFromHeaders(A<IHeaderDictionary>._)).Returns("ru");
-            A.CallTo(() => _mapper.MapCategoryToCategoryDTO(categories, "ru")).Returns(categoryDtos);
-            A.CallTo(() => _categoryRepository.GetAllCategories()).Returns(categories);
+            //A.CallTo(() => _mapper.GetLanguageFromHeaders(A<IHeaderDictionary>._)).Returns("ru");
+            //A.CallTo(() => _mapper.MapCategoryToCategoryDTO(categories, "ru")).Returns(categoryDtos);
+            //A.CallTo(() => _categoryRepository.GetAllCategories()).Returns(categories);
 
             //Act
             var result = await _categoriesController.GetCategories();
@@ -59,9 +59,9 @@ namespace Electro_goods_API.Tests.Controller
             var category = A.Fake<Category>();
             var categoryDto = A.Fake<CategoryDTO>();
 
-            A.CallTo(() => _categoryRepository.GetCategoryById(1));
-            A.CallTo(() => _mapper.GetLanguageFromHeaders(A<IHeaderDictionary>._)).Returns("ru");
-            A.CallTo(() => _mapper.MapCategoryToCategoryDTO(category, "ru")).Returns(categoryDto);
+            //A.CallTo(() => _categoryRepository.GetCategoryById(1));
+            //A.CallTo(() => _mapper.GetLanguageFromHeaders(A<IHeaderDictionary>._)).Returns("ru");
+            //A.CallTo(() => _mapper.MapCategoryToCategoryDTO(category, "ru")).Returns(categoryDto);
 
             //Act
             var result = await _categoriesController.GetCategoryById(1);
